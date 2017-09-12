@@ -1,8 +1,12 @@
 # ebean-docker-run
 Plugin that automatically starts docker containers (like Postgres, MySQL, ElasticSearch etc) typically for testing
 
+## Prerequisite
+
+You need docker installed locally.
+
 ## To use
-- Add ebean-docker-run as a test scope dependency
+#### 1) Add ebean-docker-run as a test scope dependency
 
 ```xml
     <dependency>
@@ -13,7 +17,7 @@ Plugin that automatically starts docker containers (like Postgres, MySQL, Elasti
     </dependency>
 ```
 
-- Add a docker-run.properties file to src/test/resources
+#### 2) Add a docker-run.properties file to src/test/resources
 
 ```properties
 dbPlatform=postgres
@@ -34,3 +38,7 @@ What is nice is that it will check the database, database user
 (and for Postgres extensions defined like hstore) are created.
 
 This makes it nice and easy to run tests against the target database (rather than H2).
+
+## Configuration options
+
+Need to complete this ...
