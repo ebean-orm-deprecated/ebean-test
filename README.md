@@ -12,7 +12,7 @@ You need docker installed locally.
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean-docker-run</artifactId>
-      <version>1.1</version>
+      <version>1.1.1</version>
       <scope>test</scope>
     </dependency>
 ```
@@ -20,12 +20,12 @@ You need docker installed locally.
 #### 2) Add a docker-run.properties file to src/test/resources
 
 ```properties
-dbPlatform=postgres
+postgres.version=9.6
 
-# define db name, user etc
-dbName=test_db
-dbUser=test_user
-dbPassword=test
+postgres.dbName=test_db
+postgres.dbUser=test_user
+postgres.dbPassword=test
+postgres.dbExtensions=hstore,pgcrypto
 ```
 
 ## What it does

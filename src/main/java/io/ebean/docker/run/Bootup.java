@@ -1,7 +1,7 @@
 package io.ebean.docker.run;
 
 import io.ebeaninternal.api.SpiContainerBootup;
-import org.avaje.docker.commands.AutoStart;
+import org.avaje.docker.container.AutoStart;
 
 /**
  * Invokes docker commands AutoStart.
