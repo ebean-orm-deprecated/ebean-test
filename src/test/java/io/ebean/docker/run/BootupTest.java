@@ -6,8 +6,7 @@ import org.junit.Test;
 public class BootupTest {
 
   @Test
-  public void bootup() throws Exception {
-
+  public void bootup() {
     new Bootup().bootup();
   }
 
