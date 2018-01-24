@@ -1,5 +1,5 @@
 # ebean-docker-run
-Plugin that automatically starts docker containers (like Postgres, MySQL, ElasticSearch etc) typically for testing
+Plugin that automatically starts docker containers (like Postgres, MySQL, SqlServer ElasticSearch etc). These containers are started and typically setup for testing by creating a database and user ready to run tests against.
 
 ## Prerequisite
 
