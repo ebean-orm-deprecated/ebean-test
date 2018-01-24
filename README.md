@@ -50,7 +50,7 @@ datasource.db.databaseDriver=org.postgresql.Driver
 ## What it does
 
 When the Ebean container starts it finds and runs this plugin
-which in turn uses `https://github.com/avaje/docker-commands` to read docker-run.properties
+which in turn uses https://github.com/avaje/docker-commands to read docker-run.properties
 and start the configured docker containers.
 
 What is nice is that it will check the database, database user 
