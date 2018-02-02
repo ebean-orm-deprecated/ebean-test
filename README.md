@@ -1,5 +1,6 @@
 # ebean-docker-run
-Plugin that automatically starts docker containers (like Postgres, MySQL, SqlServer ElasticSearch etc). These containers are started and typically setup for testing by creating a database and user ready to run tests against.
+Plugin that automatically starts docker containers (like Postgres, MySql, SqlServer, Oracle, ElasticSearch etc). 
+These containers are started and typically setup for testing by creating a database and user ready to run tests against.
 
 ## Prerequisite
 
@@ -12,7 +13,7 @@ You need docker installed locally.
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean-docker-run</artifactId>
-      <version>1.4.1</version>
+      <version>1.5.1</version>
       <scope>test</scope>
     </dependency>
 ```
@@ -58,19 +59,19 @@ What is nice is that it will check the database, database user
 
 This makes it nice and easy to run tests against the target database (rather than H2).
 
-## ebean_db system property
+## db system property
 
-The `ebean_db` system property can be set which:
+The `db` system property can be set which:
 - Sets the default datasource Ebean will use
-- If it matches a known container name like `postgres`, `mysql` or `sqlserver` then it will set `docker_run_with` such that only that container is started. 
+- If it matches a known container name like `postgres`, `mysql`, `oracle` or `sqlserver` then it will set `docker_run_with` such that only that container is started. 
 
 In this way we can run tests against a specific database platform.  e.g.
 
 ```sh
-mvn clean test -Debean_db=postgres
+mvn clean test -Ddb=postgres
 ```
 ```sh
-mvn clean test -Debean_db=sqlserver
+mvn clean test -Ddb=sqlserver
 ```
 
 
@@ -91,6 +92,7 @@ postgres.version=9.6
 #postgres.dbName=test_db
 #postgres.dbUser=test_user
 #postgres.dbPassword=test
+#postgres.startMode=create | dropCreate 
 postgres.dbExtensions=hstore,pgcrypto
 ```
 
@@ -113,6 +115,15 @@ sqlserver.version=2017-CU2
 #sqlserver.dbName=test_db
 #sqlserver.dbUser=test_user
 #sqlserver.dbPassword=SqlS3rv#r
+```
+
+### Oracle
+
+```properties
+oracle.version=latest
+#oracle.port=1433
+#oracle.dbUser=test_user
+#oracle.dbPassword=test
 ```
 
 ### ElasticSearch
