@@ -20,16 +20,34 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.19</version>
+      <!--<scope>provided</scope>-->
+    </dependency>
+
+    <!--
+    Projects are expected to explicit depend on version
+    of slf4j that they want to use
+    -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.25</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.8.1</version>
+      <version>11.12.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.avaje.docker</groupId>
       <artifactId>docker-commands</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
 
     <dependency>
