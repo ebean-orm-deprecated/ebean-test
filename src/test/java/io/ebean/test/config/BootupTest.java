@@ -1,4 +1,4 @@
-package io.ebean.docker.run;
+package io.ebean.test.config;
 
 import org.junit.Test;
 

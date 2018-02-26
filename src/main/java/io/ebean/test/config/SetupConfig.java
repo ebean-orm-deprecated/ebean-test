@@ -1,4 +1,4 @@
-package io.ebean.docker.run;
+package io.ebean.test.config;
 
 import io.ebean.config.properties.PropertiesLoader;
 import io.ebean.util.StringHelper;

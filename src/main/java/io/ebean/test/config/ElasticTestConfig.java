@@ -1,4 +1,4 @@
-package io.ebean.docker.run;
+package io.ebean.test.config;
 
 import org.avaje.docker.commands.ElasticConfig;
 import org.avaje.docker.commands.ElasticContainer;

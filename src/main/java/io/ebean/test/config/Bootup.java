@@ -1,4 +1,4 @@
-package io.ebean.docker.run;
+package io.ebean.test.config;
 
 import io.ebeaninternal.api.SpiContainerBootup;
 import io.ebeaninternal.dbmigration.DbOffline;

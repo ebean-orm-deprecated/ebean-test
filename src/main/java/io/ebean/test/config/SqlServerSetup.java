@@ -1,20 +1,20 @@
-package io.ebean.docker.run;
+package io.ebean.test.config;
 
 import java.util.Properties;
 
-class OracleSetup implements PlatformSetup {
+class SqlServerSetup implements PlatformSetup {
 
   @Override
   public Properties setup(Config config) {
 
     config.ddlMode("dropCreate");
-    config.setDefaultPort(1521);
+    config.setDefaultPort(1433);
     config.setUsernameDefault();
-    config.setPasswordDefault();
-    config.setDatabaseName("XE");
-    config.setUrl("jdbc:oracle:thin:@localhost:${port}:${databaseName}");
-    config.setDriver("oracle.jdbc.driver.OracleDriver");
+    config.setPassword("SqlS3rv#r");
+    config.setUrl("jdbc:sqlserver://localhost:${port};databaseName=${databaseName}");
+    config.setDriver("com.microsoft.sqlserver.jdbc.SQLServerDriver");
     config.datasourceDefaults();
+
     return dockerProperties(config);
   }
 
@@ -24,7 +24,7 @@ class OracleSetup implements PlatformSetup {
       return new Properties();
     }
 
-    dbConfig.setDockerVersion("latest");
+    dbConfig.setDockerVersion("2017-CE");
     return dbConfig.getDockerProperties();
   }
 
