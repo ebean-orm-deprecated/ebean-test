@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.ebean</groupId>
-  <artifactId>ebean-docker-run</artifactId>
-  <version>1.5.2-SNAPSHOT</version>
+  <groupId>io.ebean.test</groupId>
+  <artifactId>ebean-test-config</artifactId>
+  <version>2.1.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.avaje</groupId>
@@ -13,28 +13,23 @@
   </parent>
 
   <scm>
-    <developerConnection>scm:git:git@github.com:ebean-orm/ebean-docker-run.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:ebean-orm/ebean-test-config.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
   <dependencies>
 
     <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-      <version>1.19</version>
-      <!--<scope>provided</scope>-->
-    </dependency>
-
-    <!--
-    Projects are expected to explicit depend on version
-    of slf4j that they want to use
-    -->
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.25</version>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>1.19</version>
     </dependency>
 
     <dependency>
