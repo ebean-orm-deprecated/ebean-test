@@ -8,7 +8,7 @@ import io.ebean.test.config.who.WhoAutoConfig;
 
 import java.util.Properties;
 
-public class OnAutoConfigure implements AutoConfigure {
+public class AutoConfigureForTesting implements AutoConfigure {
 
   @Override
   public void configure(ServerConfig serverConfig) {
