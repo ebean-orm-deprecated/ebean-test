@@ -1,4 +1,4 @@
-package io.ebean.test.config;
+package io.ebean.test.config.platform;
 
 import java.util.Properties;
 

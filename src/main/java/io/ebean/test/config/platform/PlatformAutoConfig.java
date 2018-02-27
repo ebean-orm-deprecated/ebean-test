@@ -1,4 +1,4 @@
-package io.ebean.test.config;
+package io.ebean.test.config.platform;
 
 import io.ebean.config.properties.PropertiesLoader;
 import io.ebean.util.StringHelper;
@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-class SetupConfig {
+public class PlatformAutoConfig {
 
-  private static final Logger log = LoggerFactory.getLogger(SetupConfig.class);
+  private static final Logger log = LoggerFactory.getLogger(PlatformAutoConfig.class);
 
   /**
    * Known platforms we can setup locally or via docker container.
@@ -37,7 +37,7 @@ class SetupConfig {
 
   private String databaseName;
 
-  SetupConfig() {
+  public PlatformAutoConfig(String db, Properties properties) {
     this.db = System.getProperty("db");
     this.properties = PropertiesLoader.load();
   }
@@ -45,7 +45,7 @@ class SetupConfig {
   /**
    * Run setting up for testing.
    */
-  void run() {
+  public void run() {
     determineTestPlatform();
     if (isKnownPlatform()) {
       readDbName();

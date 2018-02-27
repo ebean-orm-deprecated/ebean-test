@@ -1,22 +1,20 @@
-package io.ebean.test.config;
+package io.ebean.test.config.platform;
 
 import java.util.Properties;
 
-class MySqlSetup implements PlatformSetup {
+class OracleSetup implements PlatformSetup {
 
   @Override
   public Properties setup(Config config) {
 
-    int defaultPort = config.isUseDocker() ? 4306 : 3306;
-
     config.ddlMode("dropCreate");
-    config.setDefaultPort(defaultPort);
+    config.setDefaultPort(1521);
     config.setUsernameDefault();
     config.setPasswordDefault();
-    config.setUrl("jdbc:mysql://localhost:${port}/${databaseName}");
-    config.setDriver("com.mysql.jdbc.Driver");
+    config.setDatabaseName("XE");
+    config.setUrl("jdbc:oracle:thin:@localhost:${port}:${databaseName}");
+    config.setDriver("oracle.jdbc.driver.OracleDriver");
     config.datasourceDefaults();
-
     return dockerProperties(config);
   }
 
@@ -26,7 +24,7 @@ class MySqlSetup implements PlatformSetup {
       return new Properties();
     }
 
-    dbConfig.setDockerVersion("5.6");
+    dbConfig.setDockerVersion("latest");
     return dbConfig.getDockerProperties();
   }
 

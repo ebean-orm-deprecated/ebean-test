@@ -1,4 +1,4 @@
-package io.ebean.test.config;
+package io.ebean.test.config.platform;
 
 import io.ebean.config.properties.PropertiesLoader;
 import io.ebean.util.StringHelper;

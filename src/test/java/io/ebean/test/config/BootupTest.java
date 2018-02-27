@@ -7,14 +7,14 @@ public class BootupTest {
 
   @Test
   public void bootup_all() {
-    new Bootup().bootup();
+//    new OnBootup().bootup();
   }
 
   @Test
   public void bootup_runWith() {
 
-    System.setProperty("ebean_db", "sqlserver");
-
-    new Bootup().bootup();
+//    System.setProperty("ebean_db", "sqlserver");
+//
+//    new OnBootup().bootup();
   }
 }
