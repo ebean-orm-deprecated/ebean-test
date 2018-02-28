@@ -24,12 +24,12 @@ class SqlServerSetup implements PlatformSetup {
       return new Properties();
     }
 
-    dbConfig.setDockerVersion("2017-CE");
+    dbConfig.setDockerVersion("2017-CU4");
     return dbConfig.getDockerProperties();
   }
 
   @Override
-  public boolean isInMemory() {
+  public boolean isLocal() {
     return false;
   }
 

@@ -32,7 +32,7 @@ class PostgresSetup implements PlatformSetup {
   }
 
   @Override
-  public boolean isInMemory() {
+  public boolean isLocal() {
     return false;
   }
 

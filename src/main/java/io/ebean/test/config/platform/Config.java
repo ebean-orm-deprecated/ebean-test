@@ -11,7 +11,7 @@ import java.util.Properties;
 class Config {
 
   /**
-   * Standard optional docker parameters that we just transfer to docker properties.
+   * Common optional docker parameters that we just transfer to docker properties.
    */
   private static final String[] DOCKER_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "maxReadyAttempts", "tmpfs", "dbAdminUser", "dbAdminPassword"};
 
@@ -94,16 +94,24 @@ class Config {
     datasourceProperty("username", username);
     datasourceProperty("password", password);
     datasourceProperty("url", url);
-    datasourceProperty("driver", driver);
+    String driverClass = datasourceProperty("driver", driver);
+    if (driverClass != null) {
+      try {
+        Class.forName(driverClass);
+      } catch (ClassNotFoundException e) {
+        throw new IllegalStateException("JDBC Driver " + driverClass + " does not appear to be in the classpath?");
+      }
+    }
   }
 
   /**
    * Override the dataSource property.
    */
-  private void datasourceProperty(String key, String defaultValue) {
+  String datasourceProperty(String key, String defaultValue) {
 
     String val = getPlatformKey(key, defaultValue);
     setProperty("datasource." + db + "." + key, val);
+    return val;
   }
 
   private void setProperty(String dsKey, String val) {
@@ -139,7 +147,7 @@ class Config {
   }
 
   void setUsername(String username) {
-    this.username = getPlatformKey("username", username);;
+    this.username = getPlatformKey("username", username);
   }
 
   void setDatabaseName(String databaseName) {
@@ -205,8 +213,4 @@ class Config {
     return dockerProperties;
   }
 
-  boolean isDebug() {
-    String val = properties.getProperty("ebean.test.debug");
-    return (val != null && val.equalsIgnoreCase("true"));
-  }
 }

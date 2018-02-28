@@ -2,16 +2,17 @@ package io.ebean.test.config.platform;
 
 import java.util.Properties;
 
-class H2Setup implements PlatformSetup {
+class SqliteSetup implements PlatformSetup {
 
   @Override
   public Properties setup(Config config) {
 
-    config.ddlMode("create");
-    config.setUsername("sa");
+    config.ddlMode("dropCreate");
+    config.setUsername("");
     config.setPassword("");
-    config.setUrl("jdbc:h2:mem:${databaseName}");
-    config.setDriver("org.h2.Driver");
+    config.setUrl("jdbc:sqlite:${databaseName}");
+    config.setDriver("org.sqlite.JDBC");
+    config.datasourceProperty("isolationlevel", "read_uncommitted");
     config.datasourceDefaults();
 
     // return empty properties

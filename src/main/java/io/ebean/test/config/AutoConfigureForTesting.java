@@ -8,6 +8,14 @@ import io.ebean.test.config.who.WhoAutoConfig;
 
 import java.util.Properties;
 
+/**
+ * Automatically configure ServerConfig for testing purposes.
+ * <p>
+ * Can setup and execute docker based databases and other containers.
+ * Can setup DataSource configuration (to match docker db setup).
+ * Can setup a CurrentUserProvider and CurrentTenantProvider for testing.
+ * Can setup a EncryptKeyManager for testing purposes with fixed key.
+ */
 public class AutoConfigureForTesting implements AutoConfigure {
 
   @Override

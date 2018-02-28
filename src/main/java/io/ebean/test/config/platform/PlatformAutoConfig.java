@@ -1,6 +1,5 @@
 package io.ebean.test.config.platform;
 
-import io.ebean.config.properties.PropertiesLoader;
 import io.ebean.util.StringHelper;
 import org.avaje.docker.container.ContainerFactory;
 import org.slf4j.Logger;
@@ -10,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static java.util.concurrent.CompletableFuture.allOf;
+import static java.util.concurrent.CompletableFuture.runAsync;
+
 public class PlatformAutoConfig {
 
   private static final Logger log = LoggerFactory.getLogger(PlatformAutoConfig.class);
@@ -18,9 +20,10 @@ public class PlatformAutoConfig {
    * Known platforms we can setup locally or via docker container.
    */
   private static Map<String, PlatformSetup> KNOWN_PLATFORMS = new HashMap<>();
+
   static {
     KNOWN_PLATFORMS.put("h2", new H2Setup());
-    KNOWN_PLATFORMS.put("sqlite", new H2Setup());
+    KNOWN_PLATFORMS.put("sqlite", new SqliteSetup());
     KNOWN_PLATFORMS.put("postgres", new PostgresSetup());
     KNOWN_PLATFORMS.put("mysql", new MySqlSetup());
     KNOWN_PLATFORMS.put("sqlserver", new SqlServerSetup());
@@ -38,8 +41,8 @@ public class PlatformAutoConfig {
   private String databaseName;
 
   public PlatformAutoConfig(String db, Properties properties) {
-    this.db = System.getProperty("db");
-    this.properties = PropertiesLoader.load();
+    this.db = db;
+    this.properties = properties;
   }
 
   /**
@@ -55,11 +58,18 @@ public class PlatformAutoConfig {
 
   private void setupForTesting() {
 
-    new ElasticTestConfig(properties).run();
+    // start containers in parallel
+    allOf(runAsync(this::setupElasticSearch), runAsync(this::setupDatabase)).join();
+  }
 
+  private void setupElasticSearch() {
+    new ElasticSearchSetup(properties).run();
+  }
+
+  private void setupDatabase() {
     Properties dockerProperties = platformSetup.setup(new Config(db, platform, databaseName, properties));
     if (!dockerProperties.isEmpty()) {
-      if (new Config(db, platform, databaseName, properties).isDebug()) {
+      if (isDebug()) {
         log.info("Docker properties: {}", dockerProperties);
       } else {
         log.debug("Docker properties: {}", dockerProperties);
@@ -67,6 +77,11 @@ public class PlatformAutoConfig {
       // start the docker container with appropriate configuration
       new ContainerFactory(dockerProperties, platform).startContainers();
     }
+  }
+
+  private boolean isDebug() {
+    String val = properties.getProperty("ebean.test.debug");
+    return (val != null && val.equalsIgnoreCase("true"));
   }
 
   private void readDbName() {
@@ -81,7 +96,7 @@ public class PlatformAutoConfig {
   }
 
   private boolean inMemoryDb() {
-    return platformSetup.isInMemory();
+    return platformSetup.isLocal();
   }
 
   /**

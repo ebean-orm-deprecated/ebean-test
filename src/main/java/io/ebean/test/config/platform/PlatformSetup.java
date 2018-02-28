@@ -4,7 +4,7 @@ import java.util.Properties;
 
 interface PlatformSetup {
 
-  boolean isInMemory();
+  boolean isLocal();
 
   Properties setup(Config dbConfig);
 }
