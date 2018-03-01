@@ -26,12 +26,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-      <version>1.19</version>
-    </dependency>
-
+    <!-- Requires Ebean 11.12.1 or greater -->
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
@@ -45,12 +40,21 @@
       <version>1.5.6</version>
     </dependency>
 
+    <!-- Not strictly required but bring in H2 Driver because we use it so much -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.196</version>
+    </dependency>
+
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>9.4.1212</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- Test dependencies -->
 
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
