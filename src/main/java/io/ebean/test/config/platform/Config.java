@@ -175,8 +175,14 @@ class Config {
     // ebean.test.postgres.extensions=hstore,pgcrypto
     String val = getPlatformKey("extensions", defaultValue);
     if (val != null) {
-      dockerProperties.setProperty(dockerKey("dbExtensions"), val);
+      dockerProperties.setProperty(dockerKey("dbExtensions"), trimExtensions(val));
     }
+  }
+
+  String trimExtensions(String val) {
+    val = val.replaceAll(" ", "");
+    val = val.replaceAll(",,", ",");
+    return val;
   }
 
   private String getPlatformKey(String key, String defaultValue) {
