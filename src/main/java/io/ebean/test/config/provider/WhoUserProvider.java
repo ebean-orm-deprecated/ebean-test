@@ -1,4 +1,4 @@
-package io.ebean.test.config.who;
+package io.ebean.test.config.provider;
 
 import io.ebean.config.CurrentUserProvider;
 import io.ebean.test.UserContext;

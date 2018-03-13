@@ -1,6 +1,6 @@
 package io.ebean.test.config.platform;
 
-import io.ebean.util.StringHelper;
+import io.ebean.config.ServerConfig;
 import org.avaje.docker.container.ContainerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,19 +30,22 @@ public class PlatformAutoConfig {
     KNOWN_PLATFORMS.put("oracle", new OracleSetup());
   }
 
+  private final ServerConfig serverConfig;
+
+  private final Properties properties;
+
   private String db;
 
   private String platform;
 
   private PlatformSetup platformSetup;
 
-  private Properties properties;
-
   private String databaseName;
 
-  public PlatformAutoConfig(String db, Properties properties) {
+  public PlatformAutoConfig(String db, ServerConfig serverConfig) {
     this.db = db;
-    this.properties = properties;
+    this.serverConfig = serverConfig;
+    this.properties = serverConfig.getProperties();
   }
 
   /**
@@ -67,7 +70,7 @@ public class PlatformAutoConfig {
   }
 
   private void setupDatabase() {
-    Properties dockerProperties = platformSetup.setup(new Config(db, platform, databaseName, properties));
+    Properties dockerProperties = platformSetup.setup(new Config(db, platform, databaseName, serverConfig));
     if (!dockerProperties.isEmpty()) {
       if (isDebug()) {
         log.info("Docker properties: {}", dockerProperties);
@@ -107,6 +110,9 @@ public class PlatformAutoConfig {
       return false;
     }
     this.platformSetup = KNOWN_PLATFORMS.get(platform);
+    if (platformSetup == null) {
+      log.warn("unknown platform {} - skipping platform setup", platform);
+    }
     return platformSetup != null;
   }
 
@@ -115,11 +121,10 @@ public class PlatformAutoConfig {
    */
   private void determineTestPlatform() {
 
-    String testPlatforms = properties.getProperty("ebean.test.platforms", properties.getProperty("ebean.test.platform"));
-    if (testPlatforms != null && !testPlatforms.isEmpty()) {
+    String testPlatform = properties.getProperty("ebean.test.platform");
+    if (testPlatform != null && !testPlatform.isEmpty()) {
       if (db == null) {
-        // just using the first platform
-        platform = StringHelper.splitNames(testPlatforms)[0];
+        platform = testPlatform.trim();
         db = "db";
       } else {
         // using command line system property to test alternate platform

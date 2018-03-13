@@ -1,13 +1,13 @@
-package io.ebean.test.config.who;
+package io.ebean.test.config.provider;
 
 import io.ebean.config.EncryptKey;
 import io.ebean.config.EncryptKeyManager;
 
-class FixedEncyptKeyManager implements EncryptKeyManager {
+class FixedEncryptKeyManager implements EncryptKeyManager {
 
   private final FixedEncryptKey key;
 
-  FixedEncyptKeyManager(String fixedKey) {
+  FixedEncryptKeyManager(String fixedKey) {
     this.key = new FixedEncryptKey(fixedKey);
   }
 

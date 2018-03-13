@@ -1,7 +1,8 @@
 package io.ebean.test.config.platform;
 
-import io.ebean.config.properties.PropertiesLoader;
+import io.ebean.config.ServerConfig;
 import io.ebean.util.StringHelper;
+import org.avaje.datasource.DataSourceConfig;
 
 import java.util.Properties;
 
@@ -14,6 +15,8 @@ class Config {
    * Common optional docker parameters that we just transfer to docker properties.
    */
   private static final String[] DOCKER_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "maxReadyAttempts", "tmpfs", "dbAdminUser", "dbAdminPassword"};
+
+  private static final String DDL_MODE_OPTIONS = "dropCreate, create, none, migration, createOnly or migrationDropCreate";
 
   private final String db;
   private final String platform;
@@ -29,13 +32,18 @@ class Config {
   private String username;
   private String password;
 
+  private final ServerConfig serverConfig;
+
+  private boolean containerDropCreate;
+
   private final Properties dockerProperties = new Properties();
 
-  Config(String db, String platform, String databaseName, Properties properties) {
+  Config(String db, String platform, String databaseName, ServerConfig serverConfig) {
     this.db = db;
     this.platform = platform;
     this.databaseName = databaseName;
-    this.properties = properties;
+    this.serverConfig = serverConfig;
+    this.properties = serverConfig.getProperties();
   }
 
   void setDefaultPort(int defaultPort) {
@@ -50,37 +58,70 @@ class Config {
   void ddlMode(String defaultMode) {
     String ddlMode = properties.getProperty("ebean.test.ddlMode", defaultMode);
     if (ddlMode == null) {
-      throw new IllegalStateException("No ebean.test.ddlMode set?  Expect one of dropCreate, create, none or migrations.");
+      throw new IllegalStateException("No ebean.test.ddlMode set?  Expect one of " + DDL_MODE_OPTIONS);
     }
     switch (ddlMode.toLowerCase()) {
       case "none": {
+        disableMigrationRun();
         break;
       }
+      case "migrationdropcreate":
+      case "migrationsdropcreate": {
+        setMigrationRun();
+        containerDropCreate = true;
+        break;
+      }
+      case "migration":
       case "migrations": {
-        setIfRequired("ebean.migration.run", "true");
+        setMigrationRun();
+        break;
+      }
+      case "createonly": {
+        setCreate();
         break;
       }
       case "create": {
-        setIfRequired("ebean.ddl.generate", "true");
-        setIfRequired("ebean.ddl.run", "true");
-        setIfRequired("ebean.ddl.createOnly", "true");
+        containerDropCreate = true;
+        setCreate();
         break;
       }
       case "dropcreate": {
-        setIfRequired("ebean.ddl.generate", "true");
-        setIfRequired("ebean.ddl.run", "true");
+        setDropCreate();
         break;
       }
       default:
-        throw new IllegalStateException("Unknown ebean.test.ddlMode [" + ddlMode + "] expecting one of dropCreate, create, none or migrations.");
+        throw new IllegalStateException("Unknown ebean.test.ddlMode [" + ddlMode + "] expecting one of " + DDL_MODE_OPTIONS);
     }
   }
 
-  private void setIfRequired(String fullKey, String value) {
-    String existingValue = properties.getProperty(fullKey);
-    if (existingValue == null) {
-      PropertiesLoader.setProperty(fullKey, value);
-    }
+  private void setCreate() {
+    setDropCreate();
+    serverConfig.setDdlCreateOnly(true);
+    setDdlProperty("createOnly");
+  }
+
+  private void setDropCreate() {
+    disableMigrationRun();
+    serverConfig.setDdlGenerate(true);
+    serverConfig.setDdlRun(true);
+    setDdlProperty("generate");
+    setDdlProperty("run");
+  }
+
+  private void setMigrationRun() {
+    serverConfig.getMigrationConfig().setRunMigration(true);
+    setProperty("ebean." + db + ".migration.run", "true");
+  }
+
+  private void disableMigrationRun() {
+    System.setProperty("ddl.migration.run", "false");
+  }
+
+  /**
+   * Override the dataSource property.
+   */
+  void setDdlProperty(String key) {
+    setProperty("ebean." + db + ".ddl." + key, "true");
   }
 
   void datasourceDefaults() {
@@ -91,10 +132,16 @@ class Config {
     if (password == null) {
       throw new IllegalStateException("password not set?");
     }
-    datasourceProperty("username", username);
-    datasourceProperty("password", password);
-    datasourceProperty("url", url);
+
+    DataSourceConfig ds = new DataSourceConfig();
+    ds.setUsername(datasourceProperty("username", username));
+    ds.setPassword(datasourceProperty("password", password));
+    ds.setUrl(datasourceProperty("url", url));
+
     String driverClass = datasourceProperty("driver", driver);
+    ds.setDriver(driverClass);
+    serverConfig.setDataSourceConfig(ds);
+
     if (driverClass != null) {
       try {
         Class.forName(driverClass);
@@ -115,8 +162,7 @@ class Config {
   }
 
   private void setProperty(String dsKey, String val) {
-
-    PropertiesLoader.setProperty(dsKey, val);
+    properties.setProperty(dsKey, val);
   }
 
   void setUrl(String urlPattern) {
@@ -163,11 +209,13 @@ class Config {
     String val = getPlatformKey("version", version);
     dockerProperties.setProperty(dockerKey("version"), val);
 
+    if (containerDropCreate) {
+      dockerProperties.setProperty(dockerKey("startMode"), "dropCreate");
+    }
     String mode = properties.getProperty("ebean.test.containerMode");
     if (mode != null) {
       dockerProperties.setProperty(dockerKey("startMode"), mode);
     }
-
     initDockerProperties();
   }
 
@@ -219,4 +267,13 @@ class Config {
     return dockerProperties;
   }
 
+  /**
+   * Pretty much only for SqlServer as we have the 2 platforms we need to choose from.
+   */
+  public void setDatabasePlatformName() {
+    String databasePlatformName = getPlatformKey("databasePlatformName", null);
+    if (databasePlatformName != null) {
+      setProperty("ebean." + db + ".databasePlatformName", databasePlatformName);
+    }
+  }
 }

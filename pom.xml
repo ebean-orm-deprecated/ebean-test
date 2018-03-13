@@ -4,7 +4,7 @@
 
   <groupId>io.ebean.test</groupId>
   <artifactId>ebean-test-config</artifactId>
-  <version>2.1.2-SNAPSHOT</version>
+  <version>11.15.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.avaje</groupId>
@@ -26,11 +26,11 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Requires Ebean 11.12.1 or greater -->
+    <!-- Requires Ebean 11.15.1 or greater -->
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.12.1</version>
+      <version>11.15.1</version>
       <scope>provided</scope>
     </dependency>
 

@@ -2,11 +2,10 @@ package io.ebean.test.config;
 
 import io.ebean.config.AutoConfigure;
 import io.ebean.config.ServerConfig;
-import io.ebean.config.properties.PropertiesLoader;
 import io.ebean.test.config.platform.PlatformAutoConfig;
-import io.ebean.test.config.who.WhoAutoConfig;
-
-import java.util.Properties;
+import io.ebean.test.config.provider.ProviderAutoConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Automatically configure ServerConfig for testing purposes.
@@ -18,29 +17,41 @@ import java.util.Properties;
  */
 public class AutoConfigureForTesting implements AutoConfigure {
 
+  private static final Logger log = LoggerFactory.getLogger(AutoConfigureForTesting.class);
+
+  /**
+   * System property that can override the platform.  mvn clean test -Ddb=sqlserver
+   */
+  private final String environmentDb = System.getProperty("db");
+
   @Override
-  public void configure(ServerConfig serverConfig) {
-    if (serverConfig.isDefaultServer() && RunOnceMarker.isRun()) {
+  public void preConfigure(ServerConfig serverConfig) {
 
-      String db = System.getProperty("db");
-      Properties properties = PropertiesLoader.load();
+    String testPlatform = serverConfig.getProperties().getProperty("ebean.test.platform");
+    log.debug("automatic testing config - with ebean.test.platform:{} environment db:{}", testPlatform, environmentDb);
 
-      setupPlatform(db, properties);
-      setupWho(serverConfig, properties);
+    if (RunOnceMarker.isRun()) {
+      setupPlatform(environmentDb, serverConfig);
     }
   }
 
-  /**
-   * Setup some support for Who, Multi-Tenant and DB encryption.
-   */
-  private void setupWho(ServerConfig serverConfig, Properties properties) {
-    new WhoAutoConfig(serverConfig, properties).run();
+  @Override
+  public void postConfigure(ServerConfig serverConfig) {
+    log.trace("automatic testing config - postConfigure");
+    setupProviders(serverConfig);
   }
 
   /**
-   * Setup the platform for testing including docker as needed.
+   * Setup support for Who, Multi-Tenant and DB encryption if they are not already set.
    */
-  private void setupPlatform(String db, Properties properties) {
-    new PlatformAutoConfig(db, properties).run();
+  private void setupProviders(ServerConfig serverConfig) {
+    new ProviderAutoConfig(serverConfig).run();
+  }
+
+  /**
+   * Setup the platform for testing including docker as needed and adjusting datasource config as needed.
+   */
+  private void setupPlatform(String db, ServerConfig serverConfig) {
+    new PlatformAutoConfig(db, serverConfig).run();
   }
 }

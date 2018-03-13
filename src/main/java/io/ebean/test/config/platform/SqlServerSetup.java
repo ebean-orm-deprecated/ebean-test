@@ -7,6 +7,8 @@ class SqlServerSetup implements PlatformSetup {
   @Override
   public Properties setup(Config config) {
 
+    config.setDatabasePlatformName();
+
     config.ddlMode("dropCreate");
     config.setDefaultPort(1433);
     config.setUsernameDefault();
