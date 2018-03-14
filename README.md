@@ -14,7 +14,7 @@ You need docker installed locally.
     <dependency>
       <groupId>io.ebean.test</groupId>
       <artifactId>ebean-test-config</artifactId>
-      <version>2.1.1</version>
+      <version>11.15.1</version>
       <scope>test</scope>
     </dependency>
 ```
@@ -37,11 +37,23 @@ ebean:
   test:
     platform: postgres
     dbName: test_myapp
-    ddlMode: dropCreate # none | dropCreate | create | migrations    
+    ddlMode: dropCreate # none | dropCreate | create | migration | createOnly | migrationDropCreate
 ```
 Note that when we use Postgres, MySql, Sql Server, Oracle or DB2 we need to specify `dbName`. 
 This should be a name that does not clash with other projects that might also test against
 the same docker container.
+
+
+Example: Using SqlServer with databasePlatformName set to sqlserver17. 
+
+```yml
+ebean:
+    dbName: test_ex
+    sqlserver:
+      databasePlatformName: sqlserver17
+```
+
+
 
 
 ## db system property
