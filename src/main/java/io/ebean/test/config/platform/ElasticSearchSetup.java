@@ -1,7 +1,7 @@
 package io.ebean.test.config.platform;
 
-import org.avaje.docker.commands.ElasticConfig;
-import org.avaje.docker.commands.ElasticContainer;
+import io.ebean.docker.commands.ElasticConfig;
+import io.ebean.docker.commands.ElasticContainer;
 
 import java.util.Properties;
 
