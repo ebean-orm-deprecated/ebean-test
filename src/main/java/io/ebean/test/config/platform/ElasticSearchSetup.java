@@ -10,7 +10,7 @@ import java.util.Properties;
  */
 class ElasticSearchSetup {
 
-  private static final String[] DOCKER_PARAMS = {"containerName", "image", "internalPort", "startMode"};
+  private static final String[] DOCKER_PARAMS = {"containerName", "image", "internalPort", "startMode", "shutdown"};
 
   private final Properties config;
 
@@ -39,6 +39,11 @@ class ElasticSearchSetup {
   private Properties populateDockerProperties(String version) {
 
     PropertiesBuilder properties = new PropertiesBuilder();
+
+    String mode = config.getProperty("ebean.test.shutdown");
+    if (mode != null) {
+      properties.set("shutdown", mode);
+    }
 
     properties.set("version", version);
     properties.set("port", read("port", "9201"));

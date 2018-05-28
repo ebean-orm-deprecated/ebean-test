@@ -14,7 +14,7 @@ class Config {
   /**
    * Common optional docker parameters that we just transfer to docker properties.
    */
-  private static final String[] DOCKER_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "maxReadyAttempts", "tmpfs", "dbAdminUser", "dbAdminPassword"};
+  private static final String[] DOCKER_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "shutdown", "maxReadyAttempts", "tmpfs", "dbAdminUser", "dbAdminPassword"};
 
   private static final String DDL_MODE_OPTIONS = "dropCreate, create, none, migration, createOnly or migrationDropCreate";
 
@@ -250,6 +250,12 @@ class Config {
   }
 
   private void setDockerOptionalParameters() {
+
+    // check for shutdown mode on all containers
+    String mode = properties.getProperty("ebean.test.shutdown");
+    if (mode != null) {
+      dockerProperties.setProperty(dockerKey("shutdown"), mode);
+    }
     for (String key : DOCKER_PARAMS) {
       String val = getPlatformKey(key, null);
       val = properties.getProperty("docker." + platform + "." + key, val);
