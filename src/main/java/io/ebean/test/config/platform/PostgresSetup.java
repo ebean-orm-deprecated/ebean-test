@@ -14,6 +14,11 @@ class PostgresSetup implements PlatformSetup {
     config.setUsernameDefault();
     config.setPasswordDefault();
     config.setUrl("jdbc:postgresql://localhost:${port}/${databaseName}");
+
+    String schema = config.getSchema();
+    if (schema != null && !schema.equals(config.getUsername())) {
+      config.urlAppend("?currentSchema=" + schema);
+    }
     config.setDriver("org.postgresql.Driver");
     config.datasourceDefaults();
 

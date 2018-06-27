@@ -29,6 +29,7 @@ class Config {
 
   private String url;
   private String driver;
+  private String schema;
   private String username;
   private String password;
 
@@ -120,7 +121,7 @@ class Config {
   /**
    * Override the dataSource property.
    */
-  void setDdlProperty(String key) {
+  private void setDdlProperty(String key) {
     setProperty("ebean." + db + ".ddl." + key, "true");
   }
 
@@ -173,23 +174,46 @@ class Config {
     this.url = val;
   }
 
+  /**
+   * Append to the connection URL.
+   */
+  void urlAppend(String dbSchemaSuffix) {
+    this.url += dbSchemaSuffix;
+  }
+
   void setDriver(String driver) {
     this.driver = getPlatformKey("driver", driver);
   }
 
-  public void setPasswordDefault() {
+  void setPasswordDefault() {
     setPassword("test");
+  }
+
+  private String deriveDbSchema() {
+    String dbSchema = properties.getProperty("ebean.dbSchema", serverConfig.getDbSchema());
+    dbSchema = properties.getProperty("ebean.test.dbSchema", dbSchema);
+    return getPlatformKey("schema", dbSchema);
   }
 
   /**
    * Set the username to default to database name.
    */
   void setUsernameDefault() {
-    this.username = getPlatformKey("username", getPlatformKey("databaseName", databaseName));
+    this.schema = deriveDbSchema();
+    String defaultValue = schema != null ? schema : getPlatformKey("databaseName", this.databaseName);
+    this.username = getKey("username", getKey("dbUser", defaultValue));
+  }
+
+  String getUsername() {
+    return username;
+  }
+
+  String getSchema() {
+    return schema;
   }
 
   void setPassword(String password) {
-    this.password = getPlatformKey("password", password);
+    this.password = getKey("password", getKey("dbPassword", password));
   }
 
   void setUsername(String username) {
@@ -237,6 +261,11 @@ class Config {
     return properties.getProperty("ebean.test." + platform + "." + key, defaultValue);
   }
 
+  private String getKey(String key, String defaultValue) {
+    defaultValue = properties.getProperty("ebean.test." + key, defaultValue);
+    return properties.getProperty("ebean.test." + platform + "." + key, defaultValue);
+  }
+
   private void initDockerProperties() {
 
     dockerProperties.setProperty(dockerKey("port"), String.valueOf(port));
@@ -276,7 +305,7 @@ class Config {
   /**
    * Pretty much only for SqlServer as we have the 2 platforms we need to choose from.
    */
-  public void setDatabasePlatformName() {
+  void setDatabasePlatformName() {
     String databasePlatformName = getPlatformKey("databasePlatformName", null);
     if (databasePlatformName != null) {
       setProperty("ebean." + db + ".databasePlatformName", databasePlatformName);
