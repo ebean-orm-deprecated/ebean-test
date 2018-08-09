@@ -20,6 +20,7 @@ class Config {
 
   private final String db;
   private final String platform;
+  private String dockerPlatform;
 
   private String databaseName;
 
@@ -42,9 +43,18 @@ class Config {
   Config(String db, String platform, String databaseName, ServerConfig serverConfig) {
     this.db = db;
     this.platform = platform;
+    this.dockerPlatform = platform;
     this.databaseName = databaseName;
     this.serverConfig = serverConfig;
     this.properties = serverConfig.getProperties();
+  }
+
+  /**
+   * Set the docker platform name (when it is different from the test platform name).
+   * For example test platform name of "postgis" maps to "postgres" docker platform name.
+   */
+  void setDockerPlatform(String dockerPlatform) {
+    this.dockerPlatform = dockerPlatform;
   }
 
   void setDefaultPort(int defaultPort) {
@@ -243,6 +253,14 @@ class Config {
     initDockerProperties();
   }
 
+  public void setDockerContainerName(String containerName) {
+    dockerProperties.setProperty(dockerKey("containerName"), getPlatformKey("containerName", containerName));
+  }
+
+  public void setDockerImage(String defaultImage) {
+    dockerProperties.setProperty(dockerKey("image"), getPlatformKey("image", defaultImage));
+  }
+
   void setDbExtensions(String defaultValue) {
     // ebean.test.postgres.extensions=hstore,pgcrypto
     String val = getPlatformKey("extensions", defaultValue);
@@ -295,7 +313,7 @@ class Config {
   }
 
   private String dockerKey(String key) {
-    return platform + "." + key;
+    return dockerPlatform + "." + key;
   }
 
   Properties getDockerProperties() {
@@ -310,5 +328,12 @@ class Config {
     if (databasePlatformName != null) {
       setProperty("ebean." + db + ".databasePlatformName", databasePlatformName);
     }
+  }
+
+  /**
+   * Return the docker platform name. Should be a name that ebean-test-docker understands.
+   */
+  String getDockerPlatform() {
+    return dockerPlatform;
   }
 }

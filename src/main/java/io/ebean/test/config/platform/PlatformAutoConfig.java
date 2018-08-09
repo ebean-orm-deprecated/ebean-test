@@ -25,6 +25,7 @@ public class PlatformAutoConfig {
     KNOWN_PLATFORMS.put("h2", new H2Setup());
     KNOWN_PLATFORMS.put("sqlite", new SqliteSetup());
     KNOWN_PLATFORMS.put("postgres", new PostgresSetup());
+    KNOWN_PLATFORMS.put("postgis", new PostgisSetup());
     KNOWN_PLATFORMS.put("mysql", new MySqlSetup());
     KNOWN_PLATFORMS.put("sqlserver", new SqlServerSetup());
     KNOWN_PLATFORMS.put("oracle", new OracleSetup());
@@ -70,7 +71,8 @@ public class PlatformAutoConfig {
   }
 
   private void setupDatabase() {
-    Properties dockerProperties = platformSetup.setup(new Config(db, platform, databaseName, serverConfig));
+    Config config = new Config(db, platform, databaseName, serverConfig);
+    Properties dockerProperties = platformSetup.setup(config);
     if (!dockerProperties.isEmpty()) {
       if (isDebug()) {
         log.info("Docker properties: {}", dockerProperties);
@@ -78,7 +80,7 @@ public class PlatformAutoConfig {
         log.debug("Docker properties: {}", dockerProperties);
       }
       // start the docker container with appropriate configuration
-      new ContainerFactory(dockerProperties, platform).startContainers();
+      new ContainerFactory(dockerProperties, config.getDockerPlatform()).startContainers();
     }
   }
 
