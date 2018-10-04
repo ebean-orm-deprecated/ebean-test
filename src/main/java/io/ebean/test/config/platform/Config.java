@@ -4,6 +4,7 @@ import io.ebean.config.ServerConfig;
 import io.ebean.util.StringHelper;
 import org.avaje.datasource.DataSourceConfig;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -300,7 +301,7 @@ class Config {
 
     // check for shutdown mode on all containers
     String mode = properties.getProperty("ebean.test.shutdown");
-    if (mode != null) {
+    if (mode != null && !ignoreDockerShutdown()) {
       dockerProperties.setProperty(dockerKey("shutdown"), mode);
     }
     for (String key : DOCKER_PARAMS) {
@@ -310,6 +311,17 @@ class Config {
         dockerProperties.setProperty(dockerKey(key), val);
       }
     }
+  }
+
+  /**
+   * For local development we might want to ignore docker shutdown.
+   *
+   * So we just want the shutdown mode to be used on the CI server.
+   */
+  private boolean ignoreDockerShutdown() {
+    File homeDir = new File(System.getProperty("user.home"));
+    File ignoreFile = new File(homeDir, ".ebean" + File.separator + "ignore-docker-shutdown");
+    return ignoreFile.exists();
   }
 
   private String dockerKey(String key) {
