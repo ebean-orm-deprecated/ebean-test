@@ -2,7 +2,7 @@ package io.ebean.test.config.platform;
 
 import io.ebean.config.ServerConfig;
 import io.ebean.util.StringHelper;
-import org.avaje.datasource.DataSourceConfig;
+import io.ebean.datasource.DataSourceConfig;
 
 import java.io.File;
 import java.util.Properties;
