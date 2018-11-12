@@ -28,7 +28,7 @@ public class AutoConfigureForTesting implements AutoConfigure {
   public void preConfigure(ServerConfig serverConfig) {
 
     String testPlatform = serverConfig.getProperties().getProperty("ebean.test.platform");
-    log.debug("automatic testing config - with ebean.test.platform:{} environment db:{}", testPlatform, environmentDb);
+    log.debug("automatic testing config - with ebean.test.platform:{} environment db:{} name:{} defaultServer:{}", testPlatform, environmentDb, serverConfig.getName(), serverConfig.isDefaultServer());
 
     if (RunOnceMarker.isRun()) {
       setupPlatform(environmentDb, serverConfig);

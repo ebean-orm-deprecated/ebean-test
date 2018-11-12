@@ -15,7 +15,8 @@ class Config {
   /**
    * Common optional docker parameters that we just transfer to docker properties.
    */
-  private static final String[] DOCKER_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "shutdown", "maxReadyAttempts", "tmpfs", "dbAdminUser", "dbAdminPassword"};
+  private static final String[] DOCKER_TEST_PARAMS = {"dbAdminUser", "dbAdminPassword", "extraDb", "extraDbUser", "extraDbPassword"};
+  private static final String[] DOCKER_PLATFORM_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "shutdown", "maxReadyAttempts", "tmpfs", };
 
   private static final String DDL_MODE_OPTIONS = "dropCreate, create, none, migration, createOnly or migrationDropCreate";
 
@@ -101,6 +102,10 @@ class Config {
         setDropCreate();
         break;
       }
+      case "runOnly": {
+        setRunOnly();
+        break;
+      }
       default:
         throw new IllegalStateException("Unknown ebean.test.ddlMode [" + ddlMode + "] expecting one of " + DDL_MODE_OPTIONS);
     }
@@ -117,6 +122,13 @@ class Config {
     serverConfig.setDdlGenerate(true);
     serverConfig.setDdlRun(true);
     setDdlProperty("generate");
+    setDdlProperty("run");
+  }
+
+  private void setRunOnly() {
+    disableMigrationRun();
+    serverConfig.setDdlGenerate(false);
+    serverConfig.setDdlRun(true);
     setDdlProperty("run");
   }
 
@@ -210,9 +222,18 @@ class Config {
    * Set the username to default to database name.
    */
   void setUsernameDefault() {
-    this.schema = deriveDbSchema();
+    this.schema = first(deriveDbSchema());
     String defaultValue = schema != null ? schema : getPlatformKey("databaseName", this.databaseName);
     this.username = getKey("username", getKey("dbUser", defaultValue));
+  }
+
+  private String first(String dbSchema) {
+    String[] schemas = dbSchema.split(",");
+    if (schemas.length > 1) {
+      // multiple schemas specified so just use the first one
+      return schemas[0];
+    }
+    return dbSchema;
   }
 
   String getUsername() {
@@ -304,7 +325,14 @@ class Config {
     if (mode != null && !ignoreDockerShutdown()) {
       dockerProperties.setProperty(dockerKey("shutdown"), mode);
     }
-    for (String key : DOCKER_PARAMS) {
+    for (String key : DOCKER_TEST_PARAMS) {
+      String val = getKey(key, null);
+      val = properties.getProperty("docker." + platform + "." + key, val);
+      if (val != null) {
+        dockerProperties.setProperty(dockerKey(key), val);
+      }
+    }
+    for (String key : DOCKER_PLATFORM_PARAMS) {
       String val = getPlatformKey(key, null);
       val = properties.getProperty("docker." + platform + "." + key, val);
       if (val != null) {
