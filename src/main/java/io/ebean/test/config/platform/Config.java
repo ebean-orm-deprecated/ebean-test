@@ -212,6 +212,10 @@ class Config {
     setPassword("test");
   }
 
+  void setExtraDbPasswordDefault() {
+    setExtraDbPassword("test");
+  }
+
   private String deriveDbSchema() {
     String dbSchema = properties.getProperty("ebean.dbSchema", serverConfig.getDbSchema());
     dbSchema = properties.getProperty("ebean.test.dbSchema", dbSchema);
@@ -225,6 +229,11 @@ class Config {
     this.schema = first(deriveDbSchema());
     String defaultValue = schema != null ? schema : getPlatformKey("databaseName", this.databaseName);
     this.username = getKey("username", getKey("dbUser", defaultValue));
+  }
+
+  void setExtraUsernameDefault() {
+    String defaultValue = getPlatformKey("databaseName", this.databaseName);
+    this.username = getKey("extraDbUser", defaultValue);
   }
 
   private String first(String dbSchema) {
@@ -245,6 +254,10 @@ class Config {
 
   String getSchema() {
     return schema;
+  }
+
+  void setExtraDbPassword(String password) {
+    this.password = getKey("extraDbPassword", password);
   }
 
   void setPassword(String password) {

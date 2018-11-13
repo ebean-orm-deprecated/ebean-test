@@ -37,6 +37,19 @@ class PostgresSetup implements PlatformSetup {
   }
 
   @Override
+  public void setupExtraDbDataSource(Config config) {
+
+    int defaultPort = config.isUseDocker() ? 6432 : 5432;
+
+    config.setDefaultPort(defaultPort);
+    config.setExtraUsernameDefault();
+    config.setExtraDbPasswordDefault();
+    config.setUrl("jdbc:postgresql://localhost:${port}/${databaseName}");
+    config.setDriver("org.postgresql.Driver");
+    config.datasourceDefaults();
+  }
+
+  @Override
   public boolean isLocal() {
     return false;
   }

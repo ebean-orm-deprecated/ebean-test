@@ -45,6 +45,11 @@ class PostgisSetup implements PlatformSetup {
   }
 
   @Override
+  public void setupExtraDbDataSource(Config config) {
+    // not supported yet
+  }
+
+  @Override
   public boolean isLocal() {
     return false;
   }

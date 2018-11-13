@@ -2,10 +2,13 @@ package io.ebean.test.config;
 
 import io.ebean.config.AutoConfigure;
 import io.ebean.config.ServerConfig;
+import io.ebean.datasource.DataSourceConfig;
 import io.ebean.test.config.platform.PlatformAutoConfig;
 import io.ebean.test.config.provider.ProviderAutoConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
 
 /**
  * Automatically configure ServerConfig for testing purposes.
@@ -27,8 +30,14 @@ public class AutoConfigureForTesting implements AutoConfigure {
   @Override
   public void preConfigure(ServerConfig serverConfig) {
 
-    String testPlatform = serverConfig.getProperties().getProperty("ebean.test.platform");
-    log.debug("automatic testing config - with ebean.test.platform:{} environment db:{} name:{} defaultServer:{}", testPlatform, environmentDb, serverConfig.getName(), serverConfig.isDefaultServer());
+    Properties properties = serverConfig.getProperties();
+    if (isExtraServer(serverConfig, properties)) {
+      log.debug("skip preConfigure on extra DB name:{}", serverConfig.getName());
+      return;
+    }
+
+    String testPlatform = properties.getProperty("ebean.test.platform");
+    log.debug("automatic testing config - with ebean.test.platform:{} environment db:{} name:{}", testPlatform, environmentDb, serverConfig.getName());
 
     if (RunOnceMarker.isRun()) {
       setupPlatform(environmentDb, serverConfig);
@@ -37,8 +46,35 @@ public class AutoConfigureForTesting implements AutoConfigure {
 
   @Override
   public void postConfigure(ServerConfig serverConfig) {
-    log.trace("automatic testing config - postConfigure");
+    log.trace("automatic testing config - postConfigure on name:{}", serverConfig.getName());
+    if (isExtraServer(serverConfig, serverConfig.getProperties())) {
+      setupExtraDataSourceIfNecessary(serverConfig);
+    }
     setupProviders(serverConfig);
+  }
+
+  /**
+   * Check if this is not the primary server and return true if that is the case.
+   */
+  private boolean isExtraServer(ServerConfig serverConfig, Properties properties) {
+    String extraDb = properties.getProperty("ebean.test.extraDb");
+    if (extraDb != null && extraDb.equals(serverConfig.getName())) {
+      serverConfig.setDefaultServer(false);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Setup the DataSource on the extra database if necessary.
+   */
+  private void setupExtraDataSourceIfNecessary(ServerConfig serverConfig) {
+
+    DataSourceConfig dataSourceConfig = serverConfig.getDataSourceConfig();
+    if (dataSourceConfig == null || dataSourceConfig.getUsername() == null) {
+      new PlatformAutoConfig(environmentDb, serverConfig)
+        .configExtraDataSource();
+    }
   }
 
   /**

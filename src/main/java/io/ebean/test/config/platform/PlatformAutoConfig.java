@@ -50,6 +50,18 @@ public class PlatformAutoConfig {
   }
 
   /**
+   * Configure the DataSource for the extra database.
+   */
+  public void configExtraDataSource() {
+    determineTestPlatform();
+    if (isKnownPlatform()) {
+      databaseName = properties.getProperty("ebean.test.extraDb");
+      Config config = new Config(db, platform, databaseName, serverConfig);
+      platformSetup.setupExtraDbDataSource(config);
+    }
+  }
+
+  /**
    * Run setting up for testing.
    */
   public void run() {

@@ -20,6 +20,11 @@ class SqliteSetup implements PlatformSetup {
   }
 
   @Override
+  public void setupExtraDbDataSource(Config config) {
+    // not supported
+  }
+
+  @Override
   public boolean isLocal() {
     return true;
   }

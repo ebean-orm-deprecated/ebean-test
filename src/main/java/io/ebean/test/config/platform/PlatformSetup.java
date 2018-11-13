@@ -15,4 +15,9 @@ interface PlatformSetup {
    * Return the properties used to configure the docker container.
    */
   Properties setup(Config dbConfig);
+
+  /**
+   * Set DataSource configuration for the extra database.
+   */
+  void setupExtraDbDataSource(Config config);
 }
