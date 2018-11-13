@@ -26,7 +26,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Requires Ebean 11.15.1 or greater -->
+    <!-- Requires Ebean 11.24.1 or greater -->
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>io.ebean.test</groupId>
       <artifactId>ebean-test-docker</artifactId>
-      <version>1.5.11-SNAPSHOT</version>
+      <version>1.5.11</version>
     </dependency>
 
     <!-- Not strictly required but bring in H2 Driver because we use it so much -->
