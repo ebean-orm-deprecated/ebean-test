@@ -15,7 +15,7 @@ class Config {
   /**
    * Common optional docker parameters that we just transfer to docker properties.
    */
-  private static final String[] DOCKER_TEST_PARAMS = {"dbAdminUser", "dbAdminPassword", "extraDb", "extraDbUser", "extraDbPassword"};
+  private static final String[] DOCKER_TEST_PARAMS = {"dbInitSqlFile", "dbAdminUser", "dbAdminPassword", "extraDb", "extraDbUser", "extraDbPassword", "extraDbInitSqlFile"};
   private static final String[] DOCKER_PLATFORM_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "shutdown", "maxReadyAttempts", "tmpfs", };
 
   private static final String DDL_MODE_OPTIONS = "dropCreate, create, none, migration, createOnly or migrationDropCreate";
@@ -228,6 +228,9 @@ class Config {
   }
 
   private String first(String dbSchema) {
+    if (dbSchema == null) {
+      return null;
+    }
     String[] schemas = dbSchema.split(",");
     if (schemas.length > 1) {
       // multiple schemas specified so just use the first one
