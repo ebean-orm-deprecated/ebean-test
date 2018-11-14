@@ -26,7 +26,7 @@ ebean:
 
 
   test:
-    platforms: h2, postgres, mysql, oracle, sqlserver
+    platforms: h2, postgres, mysql, oracle, sqlserver, hana
 #    useDocker: false
 #    dockerMode: dropCreate
     ddlMode: dropCreate # none | dropCreate | create | migrations
@@ -70,3 +70,9 @@ docker:
     password: test
     databaseUrl: jdbc:oracle:thin:@127.0.0.1:1521:XE
     databaseDriver: oracle.jdbc.driver.OracleDriver
+    
+  hana:
+    username: ${test_db}
+    password: HXEHana1
+    databaseUrl: jdbc:sap://localhost:39017/?databaseName=HXE
+    databaseDriver: com.sap.db.jdbc.Driver
