@@ -15,7 +15,7 @@ class Config {
   /**
    * Common optional docker parameters that we just transfer to docker properties.
    */
-  private static final String[] DOCKER_TEST_PARAMS = {"inMemory", "initSqlFile", "adminUser", "adminPassword", "extraDb", "extraDb.dbName", "extraDb.username", "extraDb.password", "extraDb.initSqlFile"};
+  private static final String[] DOCKER_TEST_PARAMS = {"fastStartMode", "inMemory", "initSqlFile", "adminUser", "adminPassword", "extraDb", "extraDb.dbName", "extraDb.username", "extraDb.password", "extraDb.initSqlFile"};
   private static final String[] DOCKER_PLATFORM_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "shutdown", "maxReadyAttempts", "tmpfs",};
 
   private static final String DDL_MODE_OPTIONS = "dropCreate, create, none, migration, createOnly or migrationDropCreate";
