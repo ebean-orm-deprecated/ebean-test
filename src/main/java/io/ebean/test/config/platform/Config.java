@@ -1,8 +1,8 @@
 package io.ebean.test.config.platform;
 
 import io.ebean.config.ServerConfig;
-import io.ebean.util.StringHelper;
 import io.ebean.datasource.DataSourceConfig;
+import io.ebean.util.StringHelper;
 
 import java.io.File;
 import java.util.Properties;
@@ -15,8 +15,8 @@ class Config {
   /**
    * Common optional docker parameters that we just transfer to docker properties.
    */
-  private static final String[] DOCKER_TEST_PARAMS = {"dbInitSqlFile", "dbAdminUser", "dbAdminPassword", "extraDb", "extraDbUser", "extraDbPassword", "extraDbInitSqlFile"};
-  private static final String[] DOCKER_PLATFORM_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "shutdown", "maxReadyAttempts", "tmpfs", };
+  private static final String[] DOCKER_TEST_PARAMS = {"inMemory", "initSqlFile", "adminUser", "adminPassword", "extraDb", "extraDb.dbName", "extraDb.username", "extraDb.password", "extraDb.initSqlFile"};
+  private static final String[] DOCKER_PLATFORM_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "shutdown", "maxReadyAttempts", "tmpfs",};
 
   private static final String DDL_MODE_OPTIONS = "dropCreate, create, none, migration, createOnly or migrationDropCreate";
 
@@ -149,6 +149,14 @@ class Config {
   }
 
   void datasourceDefaults() {
+    datasourceDefaults(platform);
+  }
+
+  void extraDatasourceDefaults() {
+    datasourceDefaults("extraDb");
+  }
+
+  private void datasourceDefaults(String platform) {
     // default username to databaseName
     if (username == null) {
       throw new IllegalStateException("username not set?");
@@ -158,11 +166,11 @@ class Config {
     }
 
     DataSourceConfig ds = new DataSourceConfig();
-    ds.setUsername(datasourceProperty("username", username));
-    ds.setPassword(datasourceProperty("password", password));
-    ds.setUrl(datasourceProperty("url", url));
+    ds.setUsername(datasourceProperty(platform, "username", username));
+    ds.setPassword(datasourceProperty(platform, "password", password));
+    ds.setUrl(datasourceProperty(platform, "url", url));
 
-    String driverClass = datasourceProperty("driver", driver);
+    String driverClass = datasourceProperty(platform, "driver", driver);
     ds.setDriver(driverClass);
     serverConfig.setDataSourceConfig(ds);
 
@@ -175,12 +183,16 @@ class Config {
     }
   }
 
+  String datasourceProperty(String key, String defaultValue) {
+    return datasourceProperty(platform, key, defaultValue);
+  }
+
   /**
    * Override the dataSource property.
    */
-  String datasourceProperty(String key, String defaultValue) {
+  String datasourceProperty(String platform, String key, String defaultValue) {
 
-    String val = getPlatformKey(key, defaultValue);
+    String val = getTestKey(platform, key, defaultValue);
     setProperty("datasource." + db + "." + key, val);
     return val;
   }
@@ -228,12 +240,11 @@ class Config {
   void setUsernameDefault() {
     this.schema = first(deriveDbSchema());
     String defaultValue = schema != null ? schema : getPlatformKey("databaseName", this.databaseName);
-    this.username = getKey("username", getKey("dbUser", defaultValue));
+    this.username = getKey("username", defaultValue);
   }
 
   void setExtraUsernameDefault() {
-    String defaultValue = getPlatformKey("databaseName", this.databaseName);
-    this.username = getKey("extraDbUser", defaultValue);
+    this.username = getKey("extraDb.username", this.databaseName);
   }
 
   private String first(String dbSchema) {
@@ -257,11 +268,11 @@ class Config {
   }
 
   void setExtraDbPassword(String password) {
-    this.password = getKey("extraDbPassword", password);
+    this.password = getKey("extraDb.password", password);
   }
 
   void setPassword(String password) {
-    this.password = getKey("password", getKey("dbPassword", password));
+    this.password = getKey("password", password);
   }
 
   void setUsername(String username) {
@@ -299,11 +310,11 @@ class Config {
     dockerProperties.setProperty(dockerKey("image"), getPlatformKey("image", defaultImage));
   }
 
-  void setDbExtensions(String defaultValue) {
+  void setExtensions(String defaultValue) {
     // ebean.test.postgres.extensions=hstore,pgcrypto
     String val = getPlatformKey("extensions", defaultValue);
     if (val != null) {
-      dockerProperties.setProperty(dockerKey("dbExtensions"), trimExtensions(val));
+      dockerProperties.setProperty(dockerKey("extensions"), trimExtensions(val));
     }
   }
 
@@ -311,6 +322,10 @@ class Config {
     val = val.replaceAll(" ", "");
     val = val.replaceAll(",,", ",");
     return val;
+  }
+
+  private String getTestKey(String platform, String key, String defaultValue) {
+    return properties.getProperty("ebean.test." + platform + "." + key, defaultValue);
   }
 
   private String getPlatformKey(String key, String defaultValue) {
@@ -326,8 +341,8 @@ class Config {
 
     dockerProperties.setProperty(dockerKey("port"), String.valueOf(port));
     dockerProperties.setProperty(dockerKey("dbName"), databaseName);
-    dockerProperties.setProperty(dockerKey("dbUser"), username);
-    dockerProperties.setProperty(dockerKey("dbPassword"), password);
+    dockerProperties.setProperty(dockerKey("username"), username);
+    dockerProperties.setProperty(dockerKey("password"), password);
     dockerProperties.setProperty(dockerKey("url"), url);
     dockerProperties.setProperty(dockerKey("driver"), driver);
 
@@ -359,7 +374,7 @@ class Config {
 
   /**
    * For local development we might want to ignore docker shutdown.
-   *
+   * <p>
    * So we just want the shutdown mode to be used on the CI server.
    */
   private boolean ignoreDockerShutdown() {

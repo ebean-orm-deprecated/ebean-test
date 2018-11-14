@@ -32,7 +32,7 @@ public class AutoConfigureForTesting implements AutoConfigure {
 
     Properties properties = serverConfig.getProperties();
     if (isExtraServer(serverConfig, properties)) {
-      log.debug("skip preConfigure on extra DB name:{}", serverConfig.getName());
+      setupExtraDataSourceIfNecessary(serverConfig);
       return;
     }
 
@@ -46,10 +46,6 @@ public class AutoConfigureForTesting implements AutoConfigure {
 
   @Override
   public void postConfigure(ServerConfig serverConfig) {
-    log.trace("automatic testing config - postConfigure on name:{}", serverConfig.getName());
-    if (isExtraServer(serverConfig, serverConfig.getProperties())) {
-      setupExtraDataSourceIfNecessary(serverConfig);
-    }
     setupProviders(serverConfig);
   }
 
@@ -57,7 +53,7 @@ public class AutoConfigureForTesting implements AutoConfigure {
    * Check if this is not the primary server and return true if that is the case.
    */
   private boolean isExtraServer(ServerConfig serverConfig, Properties properties) {
-    String extraDb = properties.getProperty("ebean.test.extraDb");
+    String extraDb = properties.getProperty("ebean.test.extraDb.dbName", properties.getProperty("ebean.test.extraDb"));
     if (extraDb != null && extraDb.equals(serverConfig.getName())) {
       serverConfig.setDefaultServer(false);
       return true;

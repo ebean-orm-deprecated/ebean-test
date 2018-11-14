@@ -55,9 +55,12 @@ public class PlatformAutoConfig {
   public void configExtraDataSource() {
     determineTestPlatform();
     if (isKnownPlatform()) {
-      databaseName = properties.getProperty("ebean.test.extraDb");
+      databaseName = serverConfig.getName();
+      db = serverConfig.getName();
+
       Config config = new Config(db, platform, databaseName, serverConfig);
       platformSetup.setupExtraDbDataSource(config);
+      log.debug("configured dataSource for extraDb name:{} url:{}", db, serverConfig.getDataSourceConfig().getUrl());
     }
   }
 

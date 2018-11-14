@@ -37,7 +37,7 @@ class PostgisSetup implements PlatformSetup {
       return new Properties();
     }
 
-    config.setDbExtensions("hstore,pgcrypto,postgis");
+    config.setExtensions("hstore,pgcrypto,postgis");
     config.setDockerImage("mdillon/postgis");
     config.setDockerContainerName("postgis");
     config.setDockerVersion("10");

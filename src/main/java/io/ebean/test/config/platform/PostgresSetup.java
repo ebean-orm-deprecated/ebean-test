@@ -32,7 +32,7 @@ class PostgresSetup implements PlatformSetup {
     }
 
     config.setDockerVersion("10");
-    config.setDbExtensions("hstore,pgcrypto");
+    config.setExtensions("hstore,pgcrypto");
     return config.getDockerProperties();
   }
 
@@ -46,7 +46,7 @@ class PostgresSetup implements PlatformSetup {
     config.setExtraDbPasswordDefault();
     config.setUrl("jdbc:postgresql://localhost:${port}/${databaseName}");
     config.setDriver("org.postgresql.Driver");
-    config.datasourceDefaults();
+    config.extraDatasourceDefaults();
   }
 
   @Override
