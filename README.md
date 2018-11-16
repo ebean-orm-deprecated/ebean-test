@@ -1,6 +1,6 @@
 # ebean-test-config
 
-Plugin that simplifies testing configuration for Ebean. This includes automatically starting docker containers (like Postgres, MySql, SqlServer, Oracle, ElasticSearch etc). 
+Plugin that simplifies testing configuration for Ebean. This includes automatically starting docker containers (like Postgres, MySql, SqlServer, Oracle, ElasticSearch, HANA etc). 
 These containers are started and typically setup for testing by creating a database and user ready to run tests against.
 
 ## Prerequisite
@@ -39,7 +39,7 @@ ebean:
     dbName: test_myapp
     ddlMode: dropCreate # none | dropCreate | create | migration | createOnly | migrationDropCreate
 ```
-Note that when we use Postgres, MySql, Sql Server, Oracle or DB2 we need to specify `dbName`. 
+Note that when we use Postgres, MySql, Sql Server, Oracle, HANA or DB2 we need to specify `dbName`. 
 This should be a name that does not clash with other projects that might also test against
 the same docker container.
 
@@ -60,7 +60,7 @@ ebean:
 
 The `db` system property can be set which:
 - Sets the default datasource Ebean will use
-- If it matches a known container name like `postgres`, `mysql`, `oracle` or `sqlserver` then it will start an appropriate docker container to run the tests against. 
+- If it matches a known container name like `postgres`, `mysql`, `oracle`, `hana` or `sqlserver` then it will start an appropriate docker container to run the tests against. 
 
 In this way we can run tests against a specific database platform.  e.g.
 
