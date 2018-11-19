@@ -15,7 +15,7 @@ class Config {
   /**
    * Common optional docker parameters that we just transfer to docker properties.
    */
-  private static final String[] DOCKER_TEST_PARAMS = {"fastStartMode", "inMemory", "initSqlFile", "adminUser", "adminPassword", "extraDb", "extraDb.dbName", "extraDb.username", "extraDb.password", "extraDb.initSqlFile"};
+  private static final String[] DOCKER_TEST_PARAMS = {"fastStartMode", "inMemory", "initSqlFile", "seedSqlFile", "adminUser", "adminPassword", "extraDb", "extraDb.dbName", "extraDb.username", "extraDb.password", "extraDb.initSqlFile", "extraDb.seedSqlFile"};
   private static final String[] DOCKER_PLATFORM_PARAMS = {"containerName", "image", "internalPort", "startMode", "stopMode", "shutdown", "maxReadyAttempts", "tmpfs",};
 
   private static final String DDL_MODE_OPTIONS = "dropCreate, create, none, migration, createOnly or migrationDropCreate";
@@ -190,7 +190,7 @@ class Config {
   /**
    * Override the dataSource property.
    */
-  String datasourceProperty(String platform, String key, String defaultValue) {
+  private String datasourceProperty(String platform, String key, String defaultValue) {
 
     String val = getTestKey(platform, key, defaultValue);
     setProperty("datasource." + db + "." + key, val);
@@ -267,7 +267,7 @@ class Config {
     return schema;
   }
 
-  void setExtraDbPassword(String password) {
+  private void setExtraDbPassword(String password) {
     this.password = getKey("extraDb.password", password);
   }
 
@@ -302,11 +302,11 @@ class Config {
     initDockerProperties();
   }
 
-  public void setDockerContainerName(String containerName) {
+  void setDockerContainerName(String containerName) {
     dockerProperties.setProperty(dockerKey("containerName"), getPlatformKey("containerName", containerName));
   }
 
-  public void setDockerImage(String defaultImage) {
+  void setDockerImage(String defaultImage) {
     dockerProperties.setProperty(dockerKey("image"), getPlatformKey("image", defaultImage));
   }
 
