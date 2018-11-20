@@ -328,7 +328,7 @@ class Config {
     return properties.getProperty("ebean.test." + platform + "." + key, defaultValue);
   }
 
-  private String getPlatformKey(String key, String defaultValue) {
+  String getPlatformKey(String key, String defaultValue) {
     return properties.getProperty("ebean.test." + platform + "." + key, defaultValue);
   }
 
