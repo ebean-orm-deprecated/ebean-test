@@ -3,6 +3,8 @@ package io.ebean.test.config.platform;
 import io.ebean.config.ServerConfig;
 import io.ebean.datasource.DataSourceConfig;
 import io.ebean.util.StringHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Properties;
@@ -11,6 +13,8 @@ import java.util.Properties;
  * Config for a database / datasource with associated DDL mode and Docker configuration.
  */
 class Config {
+
+  private static final Logger log = LoggerFactory.getLogger(Config.class);
 
   /**
    * Common optional docker parameters that we just transfer to docker properties.
@@ -168,11 +172,14 @@ class Config {
     DataSourceConfig ds = new DataSourceConfig();
     ds.setUsername(datasourceProperty(platform, "username", username));
     ds.setPassword(datasourceProperty(platform, "password", password));
+    ds.setOwnerUsername(datasourceProperty(platform, "ownerUsername", null));
+    ds.setOwnerPassword(datasourceProperty(platform, "ownerPassword", null));
     ds.setUrl(datasourceProperty(platform, "url", url));
-
     String driverClass = datasourceProperty(platform, "driver", driver);
     ds.setDriver(driverClass);
     serverConfig.setDataSourceConfig(ds);
+
+    log.info("Using jdbc settings - username:{} url:{} driver:{}", ds.getUsername(), ds.getUrl(), ds.getDriver());
 
     if (driverClass != null) {
       try {
@@ -193,7 +200,9 @@ class Config {
   private String datasourceProperty(String platform, String key, String defaultValue) {
 
     String val = getTestKey(platform, key, defaultValue);
-    setProperty("datasource." + db + "." + key, val);
+    if (val != null) {
+      setProperty("datasource." + db + "." + key, val);
+    }
     return val;
   }
 
