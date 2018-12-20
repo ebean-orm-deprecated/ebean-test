@@ -79,6 +79,7 @@ public class PlatformAutoConfig {
   private void setupForTesting() {
 
     // start containers in parallel
+    RedisSetup.run(properties);
     allOf(runAsync(this::setupElasticSearch), runAsync(this::setupDatabase)).join();
   }
 

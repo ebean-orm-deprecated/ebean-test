@@ -26,6 +26,7 @@ ebean:
 
 
   test:
+    redis: latest
     platforms: h2, postgres, mysql, oracle, sqlserver, hana
 #    useDocker: false
 #    dockerMode: dropCreate
@@ -70,7 +71,7 @@ docker:
     password: test
     databaseUrl: jdbc:oracle:thin:@127.0.0.1:1521:XE
     databaseDriver: oracle.jdbc.driver.OracleDriver
-    
+
   hana:
     username: ${test_db}
     password: HXEHana1
