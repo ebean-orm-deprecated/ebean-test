@@ -29,6 +29,7 @@ public class PlatformAutoConfig {
     KNOWN_PLATFORMS.put("mysql", new MySqlSetup());
     KNOWN_PLATFORMS.put("sqlserver", new SqlServerSetup());
     KNOWN_PLATFORMS.put("oracle", new OracleSetup());
+    KNOWN_PLATFORMS.put("clickhouse", new ClickHouseSetup());
     KNOWN_PLATFORMS.put("hana", new HanaSetup());
   }
 
