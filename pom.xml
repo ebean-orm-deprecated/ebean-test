@@ -4,7 +4,7 @@
 
   <groupId>io.ebean.test</groupId>
   <artifactId>ebean-test-config</artifactId>
-  <version>11.38.2-SNAPSHOT</version>
+  <version>11.39.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.avaje</groupId>
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>io.ebean.test</groupId>
       <artifactId>ebean-test-docker</artifactId>
-      <version>2.4.1</version>
+      <version>2.5.1</version>
     </dependency>
 
     <!-- Not strictly required but bring in H2 Driver because we use it so much -->
@@ -66,7 +66,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.39</version>
+      <version>8.0.16</version>
       <scope>test</scope>
     </dependency>
 

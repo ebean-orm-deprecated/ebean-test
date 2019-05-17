@@ -14,10 +14,20 @@ class MySqlSetup implements PlatformSetup {
     config.setUsernameDefault();
     config.setPasswordDefault();
     config.setUrl("jdbc:mysql://localhost:${port}/${databaseName}");
-    config.setDriver("com.mysql.jdbc.Driver");
+    config.setDriver(defaultDriver());
     config.datasourceDefaults();
 
     return dockerProperties(config);
+  }
+
+  private String defaultDriver() {
+    try {
+      String newDriver = "com.mysql.cj.jdbc.Driver";
+      Class.forName(newDriver);
+      return newDriver;
+    } catch (ClassNotFoundException e) {
+      return "com.mysql.jdbc.Driver";
+    }
   }
 
   private Properties dockerProperties(Config dbConfig) {
@@ -26,7 +36,7 @@ class MySqlSetup implements PlatformSetup {
       return new Properties();
     }
 
-    dbConfig.setDockerVersion("5.6");
+    dbConfig.setDockerVersion("8.0");
     return dbConfig.getDockerProperties();
   }
 
