@@ -131,4 +131,33 @@ public class ConfigTest {
 
   }
 
+  @Test
+  public void ignoreDockerShutdown() {
+
+    Properties sourceProperties = new Properties();
+    ServerConfig serverConfig = new ServerConfig();
+    serverConfig.loadFromProperties(sourceProperties);
+
+    Config config = new Config("main", "postgres", "main", serverConfig);
+
+    assertThat(config.ignoreDockerShutdown("./src/test/resources/logback-test.xml")).isTrue();
+    assertThat(config.ignoreDockerShutdown("./src/test/resources/file-does-not-exist")).isFalse();
+
+    assertThat(config.ignoreDockerShutdown("~/.ebean/ignore-docker-shutdown")).isTrue();
+    assertThat(config.ignoreDockerShutdown()).isTrue();
+  }
+
+  @Test
+  public void ignoreDockerShutdown_viaProperties() {
+
+    Properties sourceProperties = new Properties();
+    sourceProperties.setProperty("ebean.test.localDevelopment", "./src/test/resources/logback-test.xml");
+
+    ServerConfig serverConfig = new ServerConfig();
+    serverConfig.loadFromProperties(sourceProperties);
+
+    Config config = new Config("main", "postgres", "main", serverConfig);
+    assertThat(config.ignoreDockerShutdown()).isTrue();
+  }
+
 }

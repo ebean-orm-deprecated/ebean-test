@@ -386,10 +386,19 @@ class Config {
    * <p>
    * So we just want the shutdown mode to be used on the CI server.
    */
-  private boolean ignoreDockerShutdown() {
-    File homeDir = new File(System.getProperty("user.home"));
-    File ignoreFile = new File(homeDir, ".ebean" + File.separator + "ignore-docker-shutdown");
-    return ignoreFile.exists();
+  boolean ignoreDockerShutdown() {
+    String localDev = properties.getProperty("ebean.test.localDevelopment", "~/.ebean/ignore-docker-shutdown");
+    return ignoreDockerShutdown(localDev);
+  }
+
+  boolean ignoreDockerShutdown(String localDev) {
+
+    if (localDev.startsWith("~/")) {
+      File homeDir = new File(System.getProperty("user.home"));
+      return new File(homeDir, localDev.substring(2)).exists();
+    }
+
+    return new File(localDev).exists();
   }
 
   private String dockerKey(String key) {
