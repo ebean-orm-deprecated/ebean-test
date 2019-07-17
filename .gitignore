@@ -3,3 +3,6 @@ build/
 .idea/
 *.iml
 .gradle
+
+db-create-all.sql
+db-drop-all.sql

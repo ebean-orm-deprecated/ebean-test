@@ -1,3 +1,10 @@
+datasource:
+  db:
+    username: sa
+    password:
+    databaseUrl: jdbc:h2:mem:tests
+    databaseDriver: org.h2.Driver
+
 ebean:
 #  migration:
 #    run: false
@@ -17,17 +24,9 @@ ebean:
 
 #    create: true
 
-#datasource:
-#  db:
-#    username: sa
-#    password:
-#    databaseUrl: jdbc:h2:mem:tests
-#    databaseDriver: org.h2.Driver
-
-
   test:
     redis: latest
-    platforms: h2, postgres, mysql, oracle, sqlserver, hana
+    platform: h2 #, postgres, mysql, oracle, sqlserver, hana
 #    useDocker: false
 #    dockerMode: dropCreate
     ddlMode: dropCreate # none | dropCreate | create | migrations
