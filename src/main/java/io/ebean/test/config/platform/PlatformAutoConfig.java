@@ -27,6 +27,7 @@ public class PlatformAutoConfig {
     KNOWN_PLATFORMS.put("postgres", new PostgresSetup());
     KNOWN_PLATFORMS.put("postgis", new PostgisSetup());
     KNOWN_PLATFORMS.put("mysql", new MySqlSetup());
+    KNOWN_PLATFORMS.put("mariadb", new MariaDBSetup());
     KNOWN_PLATFORMS.put("sqlserver", new SqlServerSetup());
     KNOWN_PLATFORMS.put("oracle", new OracleSetup());
     KNOWN_PLATFORMS.put("clickhouse", new ClickHouseSetup());

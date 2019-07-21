@@ -26,7 +26,7 @@ ebean:
 
   test:
     redis: latest
-    platform: h2 #, postgres, mysql, oracle, sqlserver, hana
+    platform: mariadb #, postgres, mysql, mariadb, oracle, sqlserver, hana
 #    useDocker: false
 #    dockerMode: dropCreate
     ddlMode: dropCreate # none | dropCreate | create | migrations
