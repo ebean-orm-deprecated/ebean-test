@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.ebean.test</groupId>
-  <artifactId>ebean-test-config</artifactId>
-  <version>11.41.3-SNAPSHOT</version>
+  <groupId>io.ebean</groupId>
+  <artifactId>ebean-test</artifactId>
+  <version>11.42.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.avaje</groupId>
@@ -26,11 +26,10 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Requires Ebean 11.24.1 or greater -->
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.41.4-SNAPSHOT</version>
+      <version>11.42.1</version>
       <scope>provided</scope>
     </dependency>
 
