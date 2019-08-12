@@ -55,6 +55,11 @@ class Config {
     this.properties = serverConfig.getProperties();
   }
 
+   void setSchemaFromDbName(String newDbName) {
+    this.schema = databaseName;
+    this.databaseName = newDbName;
+  }
+
   /**
    * Set the docker platform name (when it is different from the test platform name).
    * For example test platform name of "postgis" maps to "postgres" docker platform name.
@@ -82,15 +87,17 @@ class Config {
         disableMigrationRun();
         break;
       }
-      case "migrationdropcreate":
-      case "migrationsdropcreate": {
+      case "migrationonly":
+      case "migrationsonly": {
         setMigrationRun();
-        containerDropCreate = true;
         break;
       }
+      case "migrationdropcreate":
+      case "migrationsdropcreate":
       case "migration":
       case "migrations": {
         setMigrationRun();
+        containerDropCreate = true;
         break;
       }
       case "createonly": {
@@ -152,15 +159,15 @@ class Config {
     setProperty("ebean." + db + ".ddl." + key, "true");
   }
 
-  void datasourceDefaults() {
-    datasourceDefaults(platform);
+  DataSourceConfig datasourceDefaults() {
+    return datasourceDefaults(platform);
   }
 
   void extraDatasourceDefaults() {
     datasourceDefaults("extraDb");
   }
 
-  private void datasourceDefaults(String platform) {
+  private DataSourceConfig datasourceDefaults(String platform) {
     // default username to databaseName
     if (username == null) {
       throw new IllegalStateException("username not set?");
@@ -188,6 +195,7 @@ class Config {
         throw new IllegalStateException("JDBC Driver " + driverClass + " does not appear to be in the classpath?");
       }
     }
+    return ds;
   }
 
   String datasourceProperty(String key, String defaultValue) {
@@ -250,6 +258,10 @@ class Config {
     this.schema = first(deriveDbSchema());
     String defaultValue = schema != null ? schema : getPlatformKey("databaseName", this.databaseName);
     this.username = getKey("username", defaultValue);
+  }
+
+  void setUsernameDefaultSchema() {
+    this.username = getKey("username", schema);
   }
 
   void setExtraUsernameDefault() {
@@ -350,6 +362,9 @@ class Config {
 
     dockerProperties.setProperty(dockerKey("port"), String.valueOf(port));
     dockerProperties.setProperty(dockerKey("dbName"), databaseName);
+    if (schema != null) {
+      dockerProperties.setProperty(dockerKey("schema"), schema);
+    }
     dockerProperties.setProperty(dockerKey("username"), username);
     dockerProperties.setProperty(dockerKey("password"), password);
     dockerProperties.setProperty(dockerKey("url"), url);
