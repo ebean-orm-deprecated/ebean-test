@@ -4,7 +4,7 @@
 
   <groupId>io.ebean</groupId>
   <artifactId>ebean-test</artifactId>
-  <version>11.42.4-SNAPSHOT</version>
+  <version>11.43.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.avaje</groupId>
@@ -29,14 +29,14 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.42.3</version>
+      <version>11.43.1</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>io.ebean.test</groupId>
       <artifactId>ebean-test-docker</artifactId>
-      <version>2.10.2</version>
+      <version>2.10.3</version>
     </dependency>
 
     <!-- Not strictly required but bring in H2 Driver because we use it so much -->
