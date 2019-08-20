@@ -29,7 +29,7 @@
     <dependency>
       <groupId>io.ebean</groupId>
       <artifactId>ebean</artifactId>
-      <version>11.43.1</version>
+      <version>11.43.2</version>
       <scope>provided</scope>
     </dependency>
 
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.2.2</version>
+      <version>42.2.6</version>
       <scope>test</scope>
     </dependency>
 
@@ -110,7 +110,7 @@
         <extensions>true</extensions>
         <configuration>
           <tiles>
-            <tile>io.ebean.tile:enhancement:11.41.1</tile>
+            <tile>io.ebean.tile:enhancement:11.43.2</tile>
           </tiles>
         </configuration>
       </plugin>
