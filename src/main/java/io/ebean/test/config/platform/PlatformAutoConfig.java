@@ -32,6 +32,7 @@ public class PlatformAutoConfig {
     KNOWN_PLATFORMS.put("sqlserver", new SqlServerSetup());
     KNOWN_PLATFORMS.put("oracle", new OracleSetup());
     KNOWN_PLATFORMS.put("clickhouse", new ClickHouseSetup());
+    KNOWN_PLATFORMS.put("cockroach", new CockroachSetup());
     KNOWN_PLATFORMS.put("hana", new HanaSetup());
   }
 
