@@ -4,7 +4,7 @@
 
   <groupId>io.ebean</groupId>
   <artifactId>ebean-test</artifactId>
-  <version>11.45.1-SNAPSHOT</version>
+  <version>11.45.1</version>
 
   <parent>
     <groupId>org.avaje</groupId>
@@ -14,7 +14,7 @@
 
   <scm>
     <developerConnection>scm:git:git@github.com:ebean-orm/ebean-test-config.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>ebean-test-11.45.1</tag>
   </scm>
 
   <dependencies>
