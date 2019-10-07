@@ -55,7 +55,7 @@ class Config {
     this.properties = serverConfig.getProperties();
   }
 
-   void setSchemaFromDbName(String newDbName) {
+  void setSchemaFromDbName(String newDbName) {
     this.schema = databaseName;
     this.databaseName = newDbName;
   }
@@ -134,6 +134,7 @@ class Config {
     serverConfig.setDdlRun(true);
     setDdlProperty("generate");
     setDdlProperty("run");
+    setDdlInitSeed();
   }
 
   private void setRunOnly() {
@@ -141,6 +142,18 @@ class Config {
     serverConfig.setDdlGenerate(false);
     serverConfig.setDdlRun(true);
     setDdlProperty("run");
+    setDdlInitSeed();
+  }
+
+  private void setDdlInitSeed() {
+    final String initSql = getKey("initSql", null);
+    if (initSql != null) {
+      setProperty("ebean." + db + ".ddl.initSql", initSql);
+    }
+    final String seedSql = getKey("seedSql", null);
+    if (seedSql != null) {
+      setProperty("ebean." + db + ".ddl.seedSql", seedSql);
+    }
   }
 
   private void setMigrationRun() {
