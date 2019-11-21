@@ -39,11 +39,18 @@
       <version>2.11.1</version>
     </dependency>
 
+    <!-- Including JAXB for DB Migration generation with Java 11+ -->
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>2.3.2</version>
+    </dependency>
+
     <!-- Not strictly required but bring in H2 Driver because we use it so much -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.4.196</version>
+      <version>1.4.200</version>
     </dependency>
 
     <dependency>
