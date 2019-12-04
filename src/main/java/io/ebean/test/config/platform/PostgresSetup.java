@@ -31,7 +31,7 @@ class PostgresSetup implements PlatformSetup {
       return new Properties();
     }
 
-    config.setDockerVersion("10");
+    config.setDockerVersion("11");
     config.setExtensions("hstore,pgcrypto");
     return config.getDockerProperties();
   }
