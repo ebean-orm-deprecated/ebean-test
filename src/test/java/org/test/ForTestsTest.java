@@ -50,4 +50,5 @@ public class ForTestsTest {
     BSimpleWithGen bean = new BSimpleWithGen("doInsert");
     DB.save(bean);
   }
+
 }

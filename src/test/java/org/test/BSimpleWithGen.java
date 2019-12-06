@@ -1,8 +1,12 @@
 package org.test;
 
+import io.ebean.annotation.WhenModified;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import javax.persistence.Version;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +20,12 @@ public class BSimpleWithGen {
 
   @Transient
   private Map<String, List<String>> someMap;
+
+  @WhenModified
+  private Instant whenModified;
+
+  @Version
+  private long version;
 
   public BSimpleWithGen(String name) {
     this.name = name;
@@ -45,4 +55,11 @@ public class BSimpleWithGen {
     this.someMap = someMap;
   }
 
+  public Instant getWhenModified() {
+    return whenModified;
+  }
+
+  public long getVersion() {
+    return version;
+  }
 }
