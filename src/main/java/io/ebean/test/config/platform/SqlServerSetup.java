@@ -26,7 +26,7 @@ class SqlServerSetup implements PlatformSetup {
       return new Properties();
     }
 
-    dbConfig.setDockerVersion("2017-cu19");
+    dbConfig.setDockerVersion("2019-GA-ubuntu-16.04");
     return dbConfig.getDockerProperties();
   }
 
