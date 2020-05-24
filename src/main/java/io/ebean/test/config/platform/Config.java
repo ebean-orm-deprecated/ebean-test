@@ -113,7 +113,7 @@ class Config {
         setDropCreate();
         break;
       }
-      case "runOnly": {
+      case "runonly": {
         setRunOnly();
         break;
       }
