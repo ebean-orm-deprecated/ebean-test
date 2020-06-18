@@ -19,7 +19,7 @@ public class PlatformAutoConfig {
   /**
    * Known platforms we can setup locally or via docker container.
    */
-  private static Map<String, PlatformSetup> KNOWN_PLATFORMS = new HashMap<>();
+  private static final Map<String, PlatformSetup> KNOWN_PLATFORMS = new HashMap<>();
 
   static {
     KNOWN_PLATFORMS.put("h2", new H2Setup());
@@ -81,7 +81,6 @@ public class PlatformAutoConfig {
   }
 
   private void setupForTesting() {
-
     // start containers in parallel
     RedisSetup.run(properties);
     allOf(runAsync(this::setupElasticSearch), runAsync(this::setupDatabase)).join();
@@ -143,7 +142,6 @@ public class PlatformAutoConfig {
    * Determine the platform we are going to use to run testing.
    */
   private void determineTestPlatform() {
-
     String testPlatform = properties.getProperty("ebean.test.platform");
     if (testPlatform != null && !testPlatform.isEmpty()) {
       if (db == null) {

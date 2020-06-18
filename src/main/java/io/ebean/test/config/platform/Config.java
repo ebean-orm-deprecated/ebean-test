@@ -219,7 +219,6 @@ class Config {
    * Override the dataSource property.
    */
   private String datasourceProperty(String platform, String key, String defaultValue) {
-
     String val = getTestKey(platform, key, defaultValue);
     if (val != null) {
       setProperty("datasource." + db + "." + key, val);
@@ -232,7 +231,6 @@ class Config {
   }
 
   void setUrl(String urlPattern) {
-
     String val = getPlatformKey("url", urlPattern);
     val = StringHelper.replaceString(val, "${port}", String.valueOf(port));
     val = StringHelper.replaceString(val, "${databaseName}", databaseName);

@@ -65,7 +65,6 @@ public class AutoConfigureForTesting implements AutoConfigure {
    * Setup the DataSource on the extra database if necessary.
    */
   private void setupExtraDataSourceIfNecessary(ServerConfig serverConfig) {
-
     DataSourceConfig dataSourceConfig = serverConfig.getDataSourceConfig();
     if (dataSourceConfig == null || dataSourceConfig.getUsername() == null) {
       new PlatformAutoConfig(environmentDb, serverConfig)
