@@ -379,8 +379,9 @@ class Config {
     dockerProperties.setProperty(dockerKey("username"), username);
     dockerProperties.setProperty(dockerKey("password"), password);
     dockerProperties.setProperty(dockerKey("url"), url);
-    dockerProperties.setProperty(dockerKey("driver"), driver);
-
+    if (driver != null) {
+      dockerProperties.setProperty(dockerKey("driver"), driver);
+    }
     setDockerOptionalParameters();
   }
 
