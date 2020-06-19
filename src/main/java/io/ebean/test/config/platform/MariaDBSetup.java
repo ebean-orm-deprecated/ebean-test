@@ -13,29 +13,16 @@ class MariaDBSetup implements PlatformSetup {
     config.setDefaultPort(defaultPort);
     config.setUsernameDefault();
     config.setPasswordDefault();
-    config.setUrl("jdbc:mysql://localhost:${port}/${databaseName}");
-    config.setDriver(defaultDriver());
+    config.setUrl("jdbc:mariadb://localhost:${port}/${databaseName}");
     config.datasourceDefaults();
 
     return dockerProperties(config);
   }
 
-  private String defaultDriver() {
-    try {
-      String newDriver = "com.mysql.cj.jdbc.Driver";
-      Class.forName(newDriver);
-      return newDriver;
-    } catch (ClassNotFoundException e) {
-      return "com.mysql.jdbc.Driver";
-    }
-  }
-
   private Properties dockerProperties(Config dbConfig) {
-
     if (!dbConfig.isUseDocker()) {
       return new Properties();
     }
-
     dbConfig.setDockerVersion("10");
     return dbConfig.getDockerProperties();
   }
