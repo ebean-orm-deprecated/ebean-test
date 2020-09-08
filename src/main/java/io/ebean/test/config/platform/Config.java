@@ -232,8 +232,8 @@ class Config {
 
   void setUrl(String urlPattern) {
     String val = getPlatformKey("url", urlPattern);
-    val = StringHelper.replaceString(val, "${port}", String.valueOf(port));
-    val = StringHelper.replaceString(val, "${databaseName}", databaseName);
+    val = val.replace("${port}", String.valueOf(port));
+    val = val.replace("${databaseName}", databaseName);
     this.url = val;
   }
 
