@@ -1,6 +1,6 @@
 package io.ebean.test.config.platform;
 
-import io.ebean.config.ServerConfig;
+import io.ebean.config.DatabaseConfig;
 import io.ebean.docker.container.ContainerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class PlatformAutoConfig {
     KNOWN_PLATFORMS.put("hana", new HanaSetup());
   }
 
-  private final ServerConfig serverConfig;
+  private final DatabaseConfig config;
 
   private final Properties properties;
 
@@ -48,10 +48,10 @@ public class PlatformAutoConfig {
 
   private String databaseName;
 
-  public PlatformAutoConfig(String db, ServerConfig serverConfig) {
+  public PlatformAutoConfig(String db, DatabaseConfig config) {
     this.db = db;
-    this.serverConfig = serverConfig;
-    this.properties = serverConfig.getProperties();
+    this.config = config;
+    this.properties = config.getProperties();
   }
 
   /**
@@ -60,12 +60,12 @@ public class PlatformAutoConfig {
   public void configExtraDataSource() {
     determineTestPlatform();
     if (isKnownPlatform()) {
-      databaseName = serverConfig.getName();
-      db = serverConfig.getName();
+      databaseName = config.getName();
+      db = config.getName();
 
-      Config config = new Config(db, platform, databaseName, serverConfig);
+      Config config = new Config(db, platform, databaseName, this.config);
       platformSetup.setupExtraDbDataSource(config);
-      log.debug("configured dataSource for extraDb name:{} url:{}", db, serverConfig.getDataSourceConfig().getUrl());
+      log.debug("configured dataSource for extraDb name:{} url:{}", db, this.config.getDataSourceConfig().getUrl());
     }
   }
 
@@ -91,7 +91,7 @@ public class PlatformAutoConfig {
   }
 
   private void setupDatabase() {
-    Config config = new Config(db, platform, databaseName, serverConfig);
+    Config config = new Config(db, platform, databaseName, this.config);
     Properties dockerProperties = platformSetup.setup(config);
     if (!dockerProperties.isEmpty()) {
       if (isDebug()) {

@@ -1,7 +1,7 @@
 package io.ebean.test.config;
 
 import io.ebean.config.AutoConfigure;
-import io.ebean.config.ServerConfig;
+import io.ebean.config.DatabaseConfig;
 import io.ebean.datasource.DataSourceConfig;
 import io.ebean.test.config.platform.PlatformAutoConfig;
 import io.ebean.test.config.provider.ProviderAutoConfig;
@@ -28,34 +28,34 @@ public class AutoConfigureForTesting implements AutoConfigure {
   private final String environmentDb = System.getProperty("db");
 
   @Override
-  public void preConfigure(ServerConfig serverConfig) {
+  public void preConfigure(DatabaseConfig config) {
 
-    Properties properties = serverConfig.getProperties();
-    if (isExtraServer(serverConfig, properties)) {
-      setupExtraDataSourceIfNecessary(serverConfig);
+    Properties properties = config.getProperties();
+    if (isExtraServer(config, properties)) {
+      setupExtraDataSourceIfNecessary(config);
       return;
     }
 
     String testPlatform = properties.getProperty("ebean.test.platform");
-    log.debug("automatic testing config - with ebean.test.platform:{} environment db:{} name:{}", testPlatform, environmentDb, serverConfig.getName());
+    log.debug("automatic testing config - with ebean.test.platform:{} environment db:{} name:{}", testPlatform, environmentDb, config.getName());
 
     if (RunOnceMarker.isRun()) {
-      setupPlatform(environmentDb, serverConfig);
+      setupPlatform(environmentDb, config);
     }
   }
 
   @Override
-  public void postConfigure(ServerConfig serverConfig) {
-    setupProviders(serverConfig);
+  public void postConfigure(DatabaseConfig config) {
+    setupProviders(config);
   }
 
   /**
    * Check if this is not the primary server and return true if that is the case.
    */
-  private boolean isExtraServer(ServerConfig serverConfig, Properties properties) {
+  private boolean isExtraServer(DatabaseConfig config, Properties properties) {
     String extraDb = properties.getProperty("ebean.test.extraDb.dbName", properties.getProperty("ebean.test.extraDb"));
-    if (extraDb != null && extraDb.equals(serverConfig.getName())) {
-      serverConfig.setDefaultServer(false);
+    if (extraDb != null && extraDb.equals(config.getName())) {
+      config.setDefaultServer(false);
       return true;
     }
     return false;
@@ -64,10 +64,10 @@ public class AutoConfigureForTesting implements AutoConfigure {
   /**
    * Setup the DataSource on the extra database if necessary.
    */
-  private void setupExtraDataSourceIfNecessary(ServerConfig serverConfig) {
-    DataSourceConfig dataSourceConfig = serverConfig.getDataSourceConfig();
+  private void setupExtraDataSourceIfNecessary(DatabaseConfig config) {
+    DataSourceConfig dataSourceConfig = config.getDataSourceConfig();
     if (dataSourceConfig == null || dataSourceConfig.getUsername() == null) {
-      new PlatformAutoConfig(environmentDb, serverConfig)
+      new PlatformAutoConfig(environmentDb, config)
         .configExtraDataSource();
     }
   }
@@ -75,14 +75,14 @@ public class AutoConfigureForTesting implements AutoConfigure {
   /**
    * Setup support for Who, Multi-Tenant and DB encryption if they are not already set.
    */
-  private void setupProviders(ServerConfig serverConfig) {
-    new ProviderAutoConfig(serverConfig).run();
+  private void setupProviders(DatabaseConfig config) {
+    new ProviderAutoConfig(config).run();
   }
 
   /**
    * Setup the platform for testing including docker as needed and adjusting datasource config as needed.
    */
-  private void setupPlatform(String db, ServerConfig serverConfig) {
-    new PlatformAutoConfig(db, serverConfig).run();
+  private void setupPlatform(String db, DatabaseConfig config) {
+    new PlatformAutoConfig(db, config).run();
   }
 }

@@ -1,8 +1,7 @@
 package io.ebean.test.config.platform;
 
-import io.ebean.config.ServerConfig;
+import io.ebean.config.DatabaseConfig;
 import io.ebean.datasource.DataSourceConfig;
-import io.ebean.util.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,19 +39,19 @@ class Config {
   private String username;
   private String password;
 
-  private final ServerConfig serverConfig;
+  private final DatabaseConfig config;
 
   private boolean containerDropCreate;
 
   private final Properties dockerProperties = new Properties();
 
-  Config(String db, String platform, String databaseName, ServerConfig serverConfig) {
+  Config(String db, String platform, String databaseName, DatabaseConfig config) {
     this.db = db;
     this.platform = platform;
     this.dockerPlatform = platform;
     this.databaseName = databaseName;
-    this.serverConfig = serverConfig;
-    this.properties = serverConfig.getProperties();
+    this.config = config;
+    this.properties = config.getProperties();
   }
 
   void setSchemaFromDbName(String newDbName) {
@@ -124,14 +123,14 @@ class Config {
 
   private void setCreate() {
     setDropCreate();
-    serverConfig.setDdlCreateOnly(true);
+    config.setDdlCreateOnly(true);
     setDdlProperty("createOnly");
   }
 
   private void setDropCreate() {
     disableMigrationRun();
-    serverConfig.setDdlGenerate(true);
-    serverConfig.setDdlRun(true);
+    config.setDdlGenerate(true);
+    config.setDdlRun(true);
     setDdlProperty("generate");
     setDdlProperty("run");
     setDdlInitSeed();
@@ -139,8 +138,8 @@ class Config {
 
   private void setRunOnly() {
     disableMigrationRun();
-    serverConfig.setDdlGenerate(false);
-    serverConfig.setDdlRun(true);
+    config.setDdlGenerate(false);
+    config.setDdlRun(true);
     setDdlProperty("run");
     setDdlInitSeed();
   }
@@ -157,7 +156,7 @@ class Config {
   }
 
   private void setMigrationRun() {
-    serverConfig.getMigrationConfig().setRunMigration(true);
+    config.getMigrationConfig().setRunMigration(true);
     setProperty("ebean." + db + ".migration.run", "true");
   }
 
@@ -197,7 +196,7 @@ class Config {
     ds.setUrl(datasourceProperty(platform, "url", url));
     String driverClass = datasourceProperty(platform, "driver", driver);
     ds.setDriver(driverClass);
-    serverConfig.setDataSourceConfig(ds);
+    config.setDataSourceConfig(ds);
 
     log.info("Using jdbc settings - username:{} url:{} driver:{}", ds.getUsername(), ds.getUrl(), ds.getDriver());
 
@@ -257,7 +256,7 @@ class Config {
   }
 
   private String deriveDbSchema() {
-    String dbSchema = properties.getProperty("ebean.dbSchema", serverConfig.getDbSchema());
+    String dbSchema = properties.getProperty("ebean.dbSchema", config.getDbSchema());
     dbSchema = properties.getProperty("ebean.test.dbSchema", dbSchema);
     return getPlatformKey("schema", dbSchema);
   }

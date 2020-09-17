@@ -2,8 +2,8 @@ package io.ebean.test.config.provider;
 
 import io.ebean.config.CurrentTenantProvider;
 import io.ebean.config.CurrentUserProvider;
+import io.ebean.config.DatabaseConfig;
 import io.ebean.config.EncryptKeyManager;
-import io.ebean.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,36 +16,36 @@ public class ProviderAutoConfig {
 
   private static final Logger log = LoggerFactory.getLogger(ProviderAutoConfig.class);
 
-  private final ServerConfig serverConfig;
+  private final DatabaseConfig config;
   private final Properties properties;
 
-  public ProviderAutoConfig(ServerConfig serverConfig) {
-    this.serverConfig = serverConfig;
-    this.properties = serverConfig.getProperties();
+  public ProviderAutoConfig(DatabaseConfig config) {
+    this.config = config;
+    this.properties = config.getProperties();
   }
 
   public void run() {
 
     int providerSetFlag = 0;
 
-    CurrentUserProvider provider = serverConfig.getCurrentUserProvider();
+    CurrentUserProvider provider = config.getCurrentUserProvider();
     if (provider == null) {
       providerSetFlag = 1;
-      serverConfig.setCurrentUserProvider(new WhoUserProvider());
+      config.setCurrentUserProvider(new WhoUserProvider());
     }
 
-    CurrentTenantProvider tenantProvider = serverConfig.getCurrentTenantProvider();
+    CurrentTenantProvider tenantProvider = config.getCurrentTenantProvider();
     if (tenantProvider == null) {
       providerSetFlag += 2;
-      serverConfig.setCurrentTenantProvider(new WhoTenantProvider());
+      config.setCurrentTenantProvider(new WhoTenantProvider());
     }
 
-    EncryptKeyManager keyManager = serverConfig.getEncryptKeyManager();
+    EncryptKeyManager keyManager = config.getEncryptKeyManager();
     if (keyManager == null) {
       // Must be 16 Chars for Oracle function
       String keyVal = properties.getProperty("ebean.test.encryptKey", "simple0123456789");
       log.debug("for testing - using FixedEncryptKeyManager() keyVal:{}", keyVal);
-      serverConfig.setEncryptKeyManager(new FixedEncryptKeyManager(keyVal));
+      config.setEncryptKeyManager(new FixedEncryptKeyManager(keyVal));
     }
 
     if (providerSetFlag > 0) {
